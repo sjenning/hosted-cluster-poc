@@ -17,5 +17,5 @@ for secret in etcd-client server peer; do
     
     export CRT=$(encode pki/${FILE}.pem)
     export KEY=$(encode pki/${FILE}-key.pem)
-    envsubst < etcd-secret-template.yaml > etcd/${FILE}-tls-secret.yaml
+    envsubst < templates/etcd-secret-template.yaml > etcd/${FILE}-tls-secret.yaml
 done

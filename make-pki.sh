@@ -3,7 +3,7 @@
 set -ex
 
 BASEDIR=pki
-NAMESPACE=hosted
+NAMESPACE=${NAMESPACE}
 
 mkdir -p $BASEDIR
 cd $BASEDIR
@@ -51,7 +51,7 @@ function generate_client_kubeconfig() {
   ca=$1
   file=$2
   name=$3
-  server="kubernetes.hosted.svc"
+  server="kubernetes.${NAMESPACE}.svc"
 
   if [ ! -z "${6}" ]; then
     server="${6}"
@@ -205,12 +205,12 @@ generate_client_kubeconfig "ca" "kube-proxy" "system:kube-proxy" "kubernetes"
 generate_client_kubeconfig "ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
 
 # kube-apiserver
-generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "tugboat,tugboat.lab.variantweb.net,127.0.0.1,172.30.0.1,kubernetes,kubernetes.{$NAMESPACE},kubernetes.{$NAMESPACE}.svc,kubernetes.{$NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "api-hosted.lab.variantweb.net,127.0.0.1,172.30.0.1,kubernetes,kubernetes.{$NAMESPACE},kubernetes.{$NAMESPACE}.svc,kubernetes.{$NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 
 # etcd
 generate_client_key_cert "ca" "etcd-client" "kubernetes" "kubernetes"
-generate_client_key_cert "ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.hosted.svc,etcd-client.hosted.svc,etcd,etcd-client,localhost"
-generate_client_key_cert "ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.hosted.svc,*.etcd.hosted.svc.cluster.local"
+generate_client_key_cert "ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
+generate_client_key_cert "ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
 
 rm -f *.csr

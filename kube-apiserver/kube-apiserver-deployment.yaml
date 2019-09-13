@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kube-apiserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kube-apiserver
+  template:
+    metadata:
+      labels:
+        app: kube-apiserver
+    spec:
+      containers:
+      - name: kube-apiserver
+        image: registry.svc.ci.openshift.org/origin/4.2-2019-09-13-012841@sha256:860cf18486db17475464da470260f8e50d3bd27a327e491c50f7fff866aaf395
+        command: ["hyperkube", "kube-apiserver"]
+        args:
+        - "--allow-privileged=true"
+        - "--authorization-mode=Node,RBAC"
+        - "--client-ca-file=/etc/kubernetes/ca.crt"
+        - "--tls-cert-file=/etc/kubernetes/server.crt"
+        - "--tls-private-key-file=/etc/kubernetes/server.key"
+        - "--etcd-cafile=/etc/kubernetes/ca.crt"
+        - "--etcd-certfile=/etc/kubernetes/etcd-client.crt"
+        - "--etcd-keyfile=/etc/kubernetes/etcd-client.key"
+        - "--etcd-servers=https://etcd-client:2379"
+        - "--kubelet-certificate-authority=/etc/kubernetes/ca.crt"
+        - "--kubelet-client-certificate=/etc/kubernetes/kubelet-client.crt"
+        - "--kubelet-client-key=/etc/kubernetes/kubelet-client.key"
+        - "--service-account-key-file=/etc/kubernetes/service-account.pub"
+        - "--service-cluster-ip-range=172.30.0.0/16"
+        - "--v=2"
+        volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: kube-apiserver
+      volumes:
+      - secret:
+          secretName: kube-apiserver
+        name: kube-apiserver
