@@ -36,8 +36,8 @@ spec:
         - "--v=2"
         volumeMounts:
         - mountPath: /etc/kubernetes/
-          name: kube-apiserver
+          name: secret
       volumes:
       - secret:
           secretName: kube-apiserver
-        name: kube-apiserver
+        name: secret

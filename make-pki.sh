@@ -51,7 +51,7 @@ function generate_client_kubeconfig() {
   ca=$1
   file=$2
   name=$3
-  server="kubernetes.${NAMESPACE}.svc"
+  server="kube-apiserver"
 
   if [ ! -z "${6}" ]; then
     server="${6}"
@@ -184,6 +184,7 @@ EOF
 # generate CAs
 generate_ca "ca"
 
+# admin kubeconfig
 generate_client_kubeconfig "ca" "admin" "system:admin" "system:masters" "tugboat" "tugboat.lab.variantweb.net"
 
 #NODES="tugboat"
@@ -192,7 +193,8 @@ generate_client_kubeconfig "ca" "admin" "system:admin" "system:masters" "tugboat
 #generate_client_key_cert "ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
 #done
 
-generate_client_kubeconfig "ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes"
+# kube-controller-manager
+generate_client_kubeconfig "ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes" "kube-apiserver"
 if [ ! -e "service-account-key.pem" ]; then 
   openssl genrsa -out service-account-key.pem 2048
   openssl rsa -in service-account-key.pem -pubout > service-account.pem
@@ -205,7 +207,7 @@ generate_client_kubeconfig "ca" "kube-proxy" "system:kube-proxy" "kubernetes"
 generate_client_kubeconfig "ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
 
 # kube-apiserver
-generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "api-hosted.lab.variantweb.net,127.0.0.1,172.30.0.1,kubernetes,kubernetes.{$NAMESPACE},kubernetes.{$NAMESPACE}.svc,kubernetes.{$NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "127.0.0.1,172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 
 # etcd
