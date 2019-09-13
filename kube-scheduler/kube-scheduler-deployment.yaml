@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kube-scheduler
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kube-scheduler
+  template:
+    metadata:
+      labels:
+        app: kube-scheduler
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: kube-scheduler
+        # OCP hyperkube kube-scheduler still requires --openshift-config
+        #image: registry.svc.ci.openshift.org/origin/4.2-2019-09-13-012841@sha256:860cf18486db17475464da470260f8e50d3bd27a327e491c50f7fff866aaf395
+        image: k8s.gcr.io/hyperkube:v1.14.6
+        command: ["/hyperkube", "kube-scheduler"]
+        args:
+        - "--config=/etc/kubernetes/config.yaml"
+        volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: secret
+      volumes:
+      - secret:
+          secretName: kube-scheduler
+        name: secret
