@@ -2,9 +2,7 @@
 
 set -eux
 
-function encode() {
-    cat ${1} | base64 | tr -d '\n'
-}
+source ./common.sh
 
 export CA=$(encode pki/ca.pem)
 for secret in etcd-client server peer; do

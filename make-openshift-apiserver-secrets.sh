@@ -4,9 +4,7 @@ set -eux
 
 NAMESPACE=hosted
 
-function encode() {
-  cat ${1} | base64 | tr -d '\n'
-}
+source ./common.sh
 
 CABUNDLE="$(encode pki/ca.pem)"
 

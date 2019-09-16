@@ -2,9 +2,7 @@
 
 set -eux
 
-function encode() {
-  cat ${1} | base64 | tr -d '\n'
-}
+source ./common.sh
 
 cat > kube-controller-manager/kube-controller-manager-secret.yaml <<EOF 
 apiVersion: v1
