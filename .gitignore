@@ -1,3 +1,4 @@
 /pki
 *-secret.yaml
 /openshift-apiserver/openshift-apiserver-apiservices.yaml
+/etcd/operator-cluster-role-binding.yaml
