@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: openshift-apiserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: openshift-apiserver
+  template:
+    metadata:
+      labels:
+        app: openshift-apiserver
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: openshift-apiserver
+        image: registry.svc.ci.openshift.org/origin/4.2-2019-09-16-154910@sha256:194f39dc60cf1dc4666b4a5c2fdd54f25fbd91149865f542697ec2ab51d91f76
+        args:
+        - "start"
+        - "--config=/etc/kubernetes/config.yaml"
+        volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: secret
+      volumes:
+      - secret:
+          secretName: openshift-apiserver
+        name: secret
