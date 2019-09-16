@@ -17,7 +17,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: kube-apiserver
-        image: registry.svc.ci.openshift.org/origin/4.2-2019-09-13-012841@sha256:860cf18486db17475464da470260f8e50d3bd27a327e491c50f7fff866aaf395
+        image: quay.io/csrwng/hosted-release:hyperkube
         command: ["hyperkube", "kube-apiserver"]
         args:
         - "--allow-privileged=true"
