@@ -210,6 +210,8 @@ generate_client_kubeconfig "ca" "kube-scheduler" "system:kube-scheduler" "kubern
 generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "hosted-api.lab.variantweb.net,172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 
+generate_client_key_cert "ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
+
 # etcd
 generate_client_key_cert "ca" "etcd-client" "kubernetes" "kubernetes"
 generate_client_key_cert "ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"

@@ -17,10 +17,8 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: kube-scheduler
-        # OCP hyperkube kube-scheduler still requires --openshift-config
-        #image: registry.svc.ci.openshift.org/origin/4.2-2019-09-13-012841@sha256:860cf18486db17475464da470260f8e50d3bd27a327e491c50f7fff866aaf395
-        image: k8s.gcr.io/hyperkube:v1.14.6
-        command: ["/hyperkube", "kube-scheduler"]
+        image: registry.svc.ci.openshift.org/origin/4.2-2019-09-16-154910@sha256:218398e93ff8a7c2d638aab4910252f0490d0737344c20253760dba5a7c8e86a
+        command: ["hyperkube", "kube-controller-manager"]
         args:
         - "--config=/etc/kubernetes/config.yaml"
         volumeMounts:
