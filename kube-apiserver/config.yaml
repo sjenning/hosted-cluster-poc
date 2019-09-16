@@ -19,7 +19,7 @@ admission:
         - 172.30.0.0/16
 aggregatorConfig:
   proxyClientInfo:
-    certFile: "/etc/kubernetes/proxy-client.key"
+    certFile: "/etc/kubernetes/proxy-client.crt"
     keyFile: "/etc/kubernetes/proxy-client.key"
 apiServerArguments:
   enable-aggregator-routing:

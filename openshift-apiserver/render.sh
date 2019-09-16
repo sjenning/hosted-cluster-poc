@@ -6,7 +6,7 @@ function encode() {
   cat ${1} | base64 | tr -d '\n'
 }
 
-CABUNDLE="$(encode ../pki/ca.pem)"
+CABUNDLE="$(encode ../pki/root-ca.pem)"
 
 # managed assets
 
@@ -21,7 +21,7 @@ data:
   server.key: $(encode ../pki/openshift-apiserver-server-key.pem)
   etcd-client.crt: $(encode ../pki/etcd-client.pem)
   etcd-client.key: $(encode ../pki/etcd-client-key.pem)
-  config.yaml: $(encode openshift-apiserver/config.yaml)
+  config.yaml: $(encode config.yaml)
   ca.crt: ${CABUNDLE}
 EOF
 

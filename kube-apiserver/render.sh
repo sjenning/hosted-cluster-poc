@@ -18,7 +18,9 @@ data:
   kubelet-client.key: $(encode ../pki/kube-apiserver-kubelet-key.pem)
   etcd-client.crt: $(encode ../pki/etcd-client.pem)
   etcd-client.key: $(encode ../pki/etcd-client-key.pem)
-  ca.crt: $(encode ../pki/ca.pem)
+  proxy-client.crt: $(encode ../pki/kube-apiserver-aggregator-proxy-client.pem)
+  proxy-client.key: $(encode ../pki/kube-apiserver-aggregator-proxy-client-key.pem)
+  ca.crt: $(encode ../pki/root-ca.pem)
   service-account.pub: $(encode ../pki/service-account.pem)
   config.yaml: $(encode config.yaml)
 EOF

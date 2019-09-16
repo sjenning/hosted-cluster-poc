@@ -6,7 +6,7 @@ function encode() {
     cat ${1} | base64 | tr -d '\n'
 }
 
-export CA=$(encode pki/ca.pem)
+export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
     file=${secret}
     if [ "${file}" != "etcd-client" ]; then
@@ -19,8 +19,8 @@ apiVersion: v1
 metadata:
   name: ${file}-tls
 data:
-  ${secret}.crt: $(encode pki/${file}.pem)
-  ${secret}.key: $(encode pki/${file}-key.pem)
+  ${secret}.crt: $(encode ../pki/${file}.pem)
+  ${secret}.key: $(encode ../pki/${file}-key.pem)
   ${secret}-ca.crt: ${CA}
 EOF
 done

@@ -100,7 +100,7 @@ function generate_ca() {
         "C": "US",
         "L": "Austin",
         "O": "Kubernetes",
-        "OU": "CA",
+        "OU": "root-ca",
         "ST": "Texas"
       }
     ]
@@ -126,7 +126,7 @@ function generate_intermediate_ca() {
         "C": "US",
         "L": "Austin",
         "O": "Kubernetes",
-        "OU": "CA",
+        "OU": "root-ca",
         "ST": "Texas"
       }
     ]
@@ -182,42 +182,44 @@ cat > ca-config.json <<EOF
 EOF
 
 # generate CAs
-generate_ca "ca"
+generate_ca "root-ca"
+generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "ca" "admin" "system:admin" "system:masters" "tugboat" "tugboat.lab.variantweb.net"
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "tugboat" "tugboat.lab.variantweb.net"
 
 #NODES="tugboat"
 #for node in ${NODES}; do
-#generate_client_kubeconfig "ca" "kubelet" "system:node:${node}" "system:nodes"
-#generate_client_key_cert "ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
+#generate_client_kubeconfig "root-ca" "kubelet" "system:node:${node}" "system:nodes"
+#generate_client_key_cert "root-ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
 #done
 
 # kube-controller-manager
-generate_client_kubeconfig "ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes" "kube-apiserver"
 if [ ! -e "service-account-key.pem" ]; then 
   openssl genrsa -out service-account-key.pem 2048
   openssl rsa -in service-account-key.pem -pubout > service-account.pem
 fi
 
 # kube-proxy
-generate_client_kubeconfig "ca" "kube-proxy" "system:kube-proxy" "kubernetes"
+generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernetes"
 
 # kube-scheduler
-generate_client_kubeconfig "ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
+generate_client_kubeconfig "root-ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
 
 # kube-apiserver
-generate_client_key_cert "ca" "kube-apiserver-server" "kubernetes" "kubernetes" "hosted-api.lab.variantweb.net,172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
-generate_client_key_cert "ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
-
-generate_client_key_cert "ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
+generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "hosted-api.lab.variantweb.net,172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
+generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
 # etcd
-generate_client_key_cert "ca" "etcd-client" "kubernetes" "kubernetes"
-generate_client_key_cert "ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
-generate_client_key_cert "ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "etcd-client" "kubernetes" "kubernetes"
+generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
+generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
 
 # openshift-apiserver
-generate_client_key_cert "ca" "openshift-apiserver-server" "openshift" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift.${NAMESPACE}.svc.cluster.local"
+
+cat root-ca.pem cluster-signer.pem > ca-bundle.pem
 
 rm -f *.csr
