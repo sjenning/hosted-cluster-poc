@@ -185,13 +185,13 @@ generate_ca "root-ca"
 generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "kubernetes" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
-#NODES="tugboat"
-#for node in ${NODES}; do
-#generate_client_kubeconfig "root-ca" "kubelet" "system:node:${node}" "system:nodes"
-#generate_client_key_cert "root-ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
-#done
+NODES="user-worker-0"
+for node in ${NODES}; do
+generate_client_kubeconfig "root-ca" "kubelet" "system:node:${node}" "system:nodes" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_key_cert "root-ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
+done
 
 # kube-controller-manager
 generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes" "kube-apiserver"
@@ -201,7 +201,7 @@ if [ ! -e "service-account-key.pem" ]; then
 fi
 
 # kube-proxy
-generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernetes"
+generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernetes" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # kube-scheduler
 generate_client_kubeconfig "root-ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
