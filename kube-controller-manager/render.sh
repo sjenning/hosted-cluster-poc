@@ -20,3 +20,5 @@ EOF
 
 export HYPERKUBE_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
+
+cp openshift-infra-namespace.yaml ../manifests/user
