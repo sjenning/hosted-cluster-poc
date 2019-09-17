@@ -41,6 +41,6 @@ spec:
 EOF
 done
 
-export HYPERKUBE_IMAGE=$(podman run -ti --rm $1 image openshift-apiserver)
+export OPENSHIFT_APISERVER_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
 envsubst < openshift-apiserver-deployment.yaml > ../manifests/user/openshift-apiserver-deployment.yaml
 cp openshift-apiserver-service.yaml ../manifests/user

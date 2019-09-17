@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
       - name: cluster-version-operator
-        image: quay.io/csrwng/release:hosted
+        image: ${RELEASE_IMAGE}
         imagePullPolicy: IfNotPresent
         args:
           - "start"
-          - "--release-image=quay.io/csrwng/release:hosted"
+          - "--release-image=${RELEASE_IMAGE}"
           - "--enable-auto-update=false"
           - "--enable-default-cluster-version=true"
-          - "--kubeconfig=/etc/kubernetes/kubeconfig/kubeconfig"
+          - "--kubeconfig=/etc/kubernetes/kubeconfig"
           - "--v=4"
           - "--exclude-manifests=.*_kube-apiserver-operator_.*"
           - "--exclude-manifests=.*_kube-controller-manager-operator_.*"
@@ -48,8 +48,8 @@ spec:
           - mountPath: /etc/cvo/updatepayloads
             name: etc-cvo-updatepayloads
             readOnly: true
-          - mountPath: /etc/kubernetes/kubeconfig
-            name: kubeconfig
+          - mountPath: /etc/kubernetes
+            name: secrets
             readOnly: true
         env:
           - name: NODE_NAME
@@ -59,6 +59,6 @@ spec:
       volumes:
         - name: etc-cvo-updatepayloads
           emptyDir: {}
-        - name: kubeconfig
+        - name: secrets
           secret:
             secretName: cluster-version-operator

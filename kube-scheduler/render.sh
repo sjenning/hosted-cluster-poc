@@ -14,5 +14,5 @@ data:
   config.yaml: $(encode config.yaml)
 EOF
 
-export HYPERKUBE_IMAGE=$(podman run -ti --rm $1 image hyperkube)
+export HYPERKUBE_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml

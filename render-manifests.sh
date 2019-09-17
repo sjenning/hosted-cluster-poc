@@ -2,7 +2,7 @@
 
 set -eux
 
-RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
+export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
 
 source config.sh
 
@@ -13,8 +13,8 @@ source config.sh
 rm -rf manifests
 mkdir -p manifests/managed manifests/user
 
-for component in etcd kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver; do
+for component in etcd kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver cluster-version-operator cluster-bootstrap; do
     pushd ${component}
-    ./render.sh "${RELEASE_IMAGE}"
+    ./render.sh
     popd
 done
