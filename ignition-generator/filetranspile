@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""
+Takes a fake root and appends them into a provided ignition configuration.
+"""
+
+import argparse
+import json
+import os
+import stat
+
+from urllib.parse import quote
+
+__version__ = '1.0.0'
+
+
+def file_to_ignition(file_path, file_contents, mode):
+    """
+    Turns a file into an ignition snippet.
+
+    :param file_path: Path to where the file should be placed.
+    :type file_path: str
+    :param file_contents: The raw contents of the file
+    :type file_contents: str
+    :param mode: Octal mode to use (will translate to decimal)
+    :type mode: int
+    :returns: Ignition config snippet
+    :rtype: dict
+    """
+    return {
+        'path': file_path,
+        "filesystem": 'root',
+        'mode': int(mode, 8),
+        'contents': {
+            'source': 'data:,{}'.format(quote(file_contents))
+        }
+    }
+
+
+def merge_with_ignition(ignition_cfg, files):
+    """
+    Merge file snippets into the ignition config.
+
+    :param ignition_cfg: Ignition structure to append to
+    :type ignition_cfg: dict
+    :param files: List of Ignition file snippets
+    :type files: list
+    :returns: Merged ignition dict
+    :rtype: dict
+    """
+    # Check that the storage exists
+    storage_check = ignition_cfg.get('storage')
+    if storage_check is None:
+        ignition_cfg['storage'] = {}
+
+    # Check that files exists
+    files_check = ignition_cfg['storage'].get('files')
+    if files_check is None:
+        ignition_cfg['storage']['files'] = []
+
+    for a_file in files:
+        ignition_cfg['storage']['files'].append(a_file)
+    return ignition_cfg
+
+
+def main():
+    """
+    Main entry point
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-i', '--ignition', help='Path to ignition file to use as the base',
+        required=True)
+    parser.add_argument(
+        '-f', '--fake-root', help='Path to the fake root',
+        required=True)
+    parser.add_argument(
+        '-o', '--output',
+        help='Where to output the file. If empty, will print to stdout')
+    parser.add_argument(
+        '-p', '--pretty', default=False, action='store_true',
+        help='Make the output pretty')
+    parser.add_argument(
+        '--version', action='version',
+        version='%(prog)s {}'.format(__version__))
+
+    args = parser.parse_args()
+
+    # Open the ignition file and load it
+    with open(args.ignition, 'r') as f:
+        # Get the ignition config
+        ignition_cfg = json.load(f)
+
+        # Walk through the files and append them for merging
+        all_files = []
+        for root, _, files in os.walk(args.fake_root):
+            for file in files:
+                path = os.path.sep.join([root, file])
+                host_path = path.replace(args.fake_root, '')
+                if not host_path.startswith(os.path.sep):
+                    host_path = os.path.sep + host_path
+                mode = oct(stat.S_IMODE(os.stat(path).st_mode))
+                with open(path, 'r') as file_obj:
+                    snippet = file_to_ignition(
+                        host_path, file_obj.read(), mode)
+                all_files.append(snippet)
+
+        # Merge the and output the results
+        merged_ignition = merge_with_ignition(ignition_cfg, all_files)
+        if args.pretty:
+            ignition_out = json.dumps(
+                merged_ignition, sort_keys=True,
+                indent=4, separators=(',', ': '))
+        else:
+            ignition_out = json.dumps(merged_ignition)
+        if args.output:
+            with open(args.output, 'w') as out_f:
+                out_f.write(ignition_out)
+        else:
+            print(ignition_out)
+
+
+if __name__ == '__main__':
+    main()

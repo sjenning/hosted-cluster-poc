@@ -1,0 +1,18 @@
+[Unit]
+Description=Kubernetes Kube Proxy
+Documentation=https://github.com/kubernetes/kubernetes
+Requires=kube-apiserver.service
+After=kube-apiserver.service
+
+[Service]
+ExecStartPre=/usr/sbin/modprobe br_netfilter
+ExecStartPre=/usr/sbin/modprobe ip_tables
+ExecStartPre=-/usr/bin/podman rm -f kube-proxy
+ExecStart=/usr/bin/podman run --name=kube-proxy -v /usr/lib/modules:/lib/modules -v /var/lib/kubernetes:/var/lib/kubernetes -v /etc/kubernetes/config:/etc/kubernetes/config  --privileged --net=host -ti registry.lab.variantweb.net/poc/hyperkube:v1.14.6 kube-proxy \
+  --config=/etc/kubernetes/config/kube-proxy.yaml
+ExecStop=/usr/bin/podman rm -f kube-proxy
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

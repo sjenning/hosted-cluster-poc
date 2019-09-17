@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""
+Takes a fake root and appends them into a provided ignition configuration.
+"""
+
+import argparse
+import json
+import os
+import stat
+
+from urllib.parse import quote
+
+__version__ = '1.0.0'
+
+
+def unit_to_ignition(name, contents, enabled):
+    """
+    Turns a systemd unit into an ignition snippet.
+
+    :param name: Name of the systemd unit.
+    :type name: str
+    :param contents: The raw contents of the unit
+    :type contents: str
+    :returns: Ignition config snippet
+    :rtype: dict
+    """
+    return {
+        'name': name,
+        'contents': contents,
+        'enabled': enabled
+    }
+
+
+def merge_with_ignition(ignition_cfg, units):
+    """
+    Merge systemd unit snippets into the ignition config.
+
+    :param ignition_cfg: Ignition structure to append to
+    :type ignition_cfg: dict
+    :param units: List of Ignition systemd unit snippets
+    :type units: list
+    :returns: Merged ignition dict
+    :rtype: dict
+    """
+    # Check that the storage exists
+    systemd_check = ignition_cfg.get('systemd')
+    if systemd_check is None:
+        ignition_cfg['systemd'] = {}
+
+    # Check that units exists
+    unit_check = ignition_cfg['systemd'].get('units')
+    if unit_check is None:
+        ignition_cfg['systemd']['units'] = []
+
+    for a_unit in units:
+        ignition_cfg['systemd']['units'].append(a_unit)
+    return ignition_cfg
+
+
+def main():
+    """
+    Main entry point
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-i', '--ignition', help='Path to ignition file to use as the base',
+        required=True)
+    parser.add_argument(
+        '-u', '--unit-dir', help='Path to the systemd unit files',
+        required=True)
+    parser.add_argument(
+        '-o', '--output',
+        help='Where to output the file. If empty, will print to stdout')
+    parser.add_argument(
+        '-p', '--pretty', default=False, action='store_true',
+        help='Make the output pretty')
+    parser.add_argument(
+        '--version', action='version',
+        version='%(prog)s {}'.format(__version__))
+
+    args = parser.parse_args()
+
+    # Open the ignition file and load it
+    with open(args.ignition, 'r') as f:
+        # Get the ignition config
+        ignition_cfg = json.load(f)
+
+        # Walk through the units and append them for merging
+        units = [f for f in os.listdir(args.unit_dir) if os.path.isfile(os.path.join(args.unit_dir, f))]
+        all_units = []
+        for unit in units:
+            path = os.path.sep.join([args.unit_dir, unit])
+            with open(path, 'r') as unit_obj:
+                snippet = unit_to_ignition(unit, unit_obj.read(), True)
+            all_units.append(snippet)
+
+        # Merge the and output the results
+        merged_ignition = merge_with_ignition(ignition_cfg, all_units)
+        if args.pretty:
+            ignition_out = json.dumps(
+                merged_ignition, sort_keys=True,
+                indent=4, separators=(',', ': '))
+        else:
+            ignition_out = json.dumps(merged_ignition)
+        if args.output:
+            with open(args.output, 'w') as out_f:
+                out_f.write(ignition_out)
+        else:
+            print(ignition_out)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,19 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/kubernetes/kubernetes
+After=crio.service
+Requires=crio.service
+
+[Service]
+ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
+ExecStart=/usr/bin/hyperkube kubelet \
+  --config=/etc/kubernetes/config/kubelet.yaml \
+  --container-runtime=remote \
+  --container-runtime-endpoint=/var/run/crio/crio.sock \
+  --kubeconfig=/var/lib/kubernetes/kubelet.kubeconfig \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

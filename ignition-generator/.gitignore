@@ -1,0 +1,5 @@
+base.ign
+bootstrap-final.ign
+final.ign
+*.pem
+*.kubeconfig
