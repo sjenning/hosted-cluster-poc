@@ -26,7 +26,6 @@ apiServerArguments:
   - 'true'
   feature-gates:
   - ExperimentalCriticalPodAnnotation=true
-  - RotateKubeletServerCertificate=true
   - SupportPodPidsLimit=true
   - LocalStorageCapacityIsolation=false
   http2-max-streams-per-connection:

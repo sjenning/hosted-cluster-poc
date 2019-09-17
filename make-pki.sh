@@ -194,7 +194,7 @@ generate_client_key_cert "root-ca" "kubelet-server" "system:node:${node}" "syste
 done
 
 # kube-controller-manager
-generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:kube-controller-manager" "kubernetes" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters" "kube-apiserver"
 if [ ! -e "service-account-key.pem" ]; then 
   openssl genrsa -out service-account-key.pem 2048
   openssl rsa -in service-account-key.pem -pubout > service-account.pem
@@ -204,7 +204,7 @@ fi
 generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernetes" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # kube-scheduler
-generate_client_kubeconfig "root-ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
+generate_client_kubeconfig "root-ca" "kube-scheduler" "system:admin" "system:masters"
 
 # kube-apiserver
 generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.31.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"

@@ -1,7 +1,9 @@
 apiVersion: kubecontrolplane.config.openshift.io/v1
 kind: KubeControllerManagerConfig
 extendedArguments:
-  kubeconfig:
+  authentication-kubeconfig:
+  - "/etc/kubernetes/kubeconfig"
+  authorization-kubeconfig:
   - "/etc/kubernetes/kubeconfig"
   allocate-node-cidrs:
   - 'true'
@@ -35,13 +37,10 @@ extendedArguments:
   - '300'
   kube-api-qps:
   - '150'
+  leader-elect-resource-lock:
+  - configmaps
   leader-elect:
   - 'true'
-  # TODO: OOTB kube-controller-manager cluster role does not allow updating
-  # configmpas in kube-system.  kube-apiserver won't allow creation of
-  # rolebinding in the user cluster without on operational openshift-apiserver.
-  #leader-elect-resource-lock:
-  #- configmaps
   leader-elect-retry-period:
   - 3s
   port:
