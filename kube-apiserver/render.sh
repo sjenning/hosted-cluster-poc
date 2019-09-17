@@ -2,9 +2,7 @@
 
 set -eux
 
-function encode() {
-  cat ${1} | base64 | tr -d '\n'
-}
+source ../lib/common.sh
 
 cat > ../manifests/managed/kube-apiserver-secret.yaml <<EOF 
 apiVersion: v1
@@ -25,4 +23,6 @@ data:
   config.yaml: $(encode config.yaml)
 EOF
 
-cp kube-*.yaml ../manifests/managed
+export HYPERKUBE_IMAGE=$(podman run -ti --rm $1 image hyperkube)
+envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
+cp kube-apiserver-service.yaml ../manifests/managed

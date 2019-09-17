@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: openshift-apiserver
-spec:
-  selector:
-    app: openshift-apiserver
-  type: ExternalName
-  externalName: openshift-apiserver.hosted.svc

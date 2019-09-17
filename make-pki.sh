@@ -2,11 +2,10 @@
 
 set -ex
 
-BASEDIR=pki
-NAMESPACE=${NAMESPACE}
+source config.sh
 
-mkdir -p $BASEDIR
-cd $BASEDIR
+mkdir -p pki
+cd pki
 
 function generate_client_key_cert() {
   ca=$1
@@ -51,7 +50,7 @@ function generate_client_kubeconfig() {
   ca=$1
   file=$2
   name=$3
-  server="kube-apiserver"
+  server="kube-apiserver:6443"
 
   if [ ! -z "${6}" ]; then
     server="${6}"
@@ -64,7 +63,7 @@ function generate_client_kubeconfig() {
   kubectl config set-cluster default \
     --certificate-authority=${ca}.pem \
     --embed-certs=true \
-    --server=https://${server}:6443 \
+    --server=https://${server} \
     --kubeconfig=${file}.kubeconfig
 
   kubectl config set-credentials ${file} \
@@ -186,7 +185,7 @@ generate_ca "root-ca"
 generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "tugboat" "tugboat.lab.variantweb.net"
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "kubernetes" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 #NODES="tugboat"
 #for node in ${NODES}; do
@@ -208,7 +207,7 @@ generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernete
 generate_client_kubeconfig "root-ca" "kube-scheduler" "system:kube-scheduler" "kubernetes"
 
 # kube-apiserver
-generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "hosted-api.lab.variantweb.net,172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.30.0.1,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 

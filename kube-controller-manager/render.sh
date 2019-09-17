@@ -2,9 +2,7 @@
 
 set -eux
 
-function encode() {
-  cat ${1} | base64 | tr -d '\n'
-}
+source ../lib/common.sh
 
 cat > ../manifests/managed/kube-controller-manager-secret.yaml <<EOF 
 apiVersion: v1
@@ -20,4 +18,5 @@ data:
   cluster-signer.key: $(encode ../pki/cluster-signer-key.pem)
 EOF
 
-cp kube-*.yaml ../manifests/managed
+export HYPERKUBE_IMAGE=$(podman run -ti --rm $1 image hyperkube)
+envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml

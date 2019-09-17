@@ -2,3 +2,4 @@
 /manifests
 *-secret.yaml
 /openshift-apiserver/openshift-apiserver-apiservices.yaml
+/config.sh

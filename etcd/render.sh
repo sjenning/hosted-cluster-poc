@@ -2,9 +2,8 @@
 
 set -eux
 
-function encode() {
-    cat ${1} | base64 | tr -d '\n'
-}
+source ../lib/common.sh
+source ../config.sh
 
 export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
@@ -26,3 +25,4 @@ EOF
 done
 
 cp *.yaml ../manifests/managed
+envsubst < etcd-operator-cluster-role-binding.yaml > ../manifests/managed/etcd-operator-cluster-role-binding.yaml

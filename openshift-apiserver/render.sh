@@ -2,15 +2,11 @@
 
 set -eux
 
-function encode() {
-  cat ${1} | base64 | tr -d '\n'
-}
+source ../lib/common.sh
 
 CABUNDLE="$(encode ../pki/root-ca.pem)"
 
-# managed assets
-
-cat > ../manifests/managed/openshift-apiserver-secret.yaml <<EOF 
+cat > ../manifests/user/openshift-apiserver-secret.yaml <<EOF 
 apiVersion: v1
 kind: Secret
 metadata:
@@ -25,11 +21,7 @@ data:
   ca.crt: ${CABUNDLE}
 EOF
 
-cp openshift-apiserver-deployment.yaml ../manifests/managed
-cp openshift-apiserver-service.yaml ../manifests/managed
-
-# user assets
-
+rm -f ../manifests/user/openshift-apiserver-apiservices.yaml
 for apiservice in v1.apps.openshift.io v1.authorization.openshift.io v1.build.openshift.io v1.image.openshift.io v1.oauth.openshift.io v1.project.openshift.io v1.quota.openshift.io v1.route.openshift.io v1.security.openshift.io v1.template.openshift.io v1.user.openshift.io; do
 cat >> ../manifests/user/openshift-apiserver-apiservices.yaml <<EOF 
 ---
@@ -49,4 +41,6 @@ spec:
 EOF
 done
 
-cp openshift-apiserver-user-service.yaml ../manifests/user
+export HYPERKUBE_IMAGE=$(podman run -ti --rm $1 image openshift-apiserver)
+envsubst < openshift-apiserver-deployment.yaml > ../manifests/user/openshift-apiserver-deployment.yaml
+cp openshift-apiserver-service.yaml ../manifests/user

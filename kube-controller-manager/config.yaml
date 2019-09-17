@@ -37,8 +37,11 @@ extendedArguments:
   - '150'
   leader-elect:
   - 'true'
-  leader-elect-resource-lock:
-  - configmaps
+  # TODO: OOTB kube-controller-manager cluster role does not allow updating
+  # configmpas in kube-system.  kube-apiserver won't allow creation of
+  # rolebinding in the user cluster without on operational openshift-apiserver.
+  #leader-elect-resource-lock:
+  #- configmaps
   leader-elect-retry-period:
   - 3s
   port:

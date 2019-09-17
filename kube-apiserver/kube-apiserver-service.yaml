@@ -7,6 +7,7 @@ spec:
   - port: 6443
     protocol: TCP
     targetPort: 6443
+    nodePort: 31123 # this is random but fixed so we can create a static LB (e.g. haproxy) to point to it
   selector:
     app: kube-apiserver
   type: NodePort

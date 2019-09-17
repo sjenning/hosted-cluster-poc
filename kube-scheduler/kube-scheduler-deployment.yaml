@@ -17,7 +17,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: kube-scheduler
-        image: registry.svc.ci.openshift.org/origin/4.2-2019-09-16-154910@sha256:218398e93ff8a7c2d638aab4910252f0490d0737344c20253760dba5a7c8e86a
+        image: ${HYPERKUBE_IMAGE}
         command:
         - hyperkube
         - kube-scheduler
