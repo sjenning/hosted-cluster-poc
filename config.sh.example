@@ -1,10 +1,13 @@
 # namespace in the managed cluster in which to deploy the control plane
-NAMESPACE=hosted
+export NAMESPACE=hosted
 
 # the name external name on which to connect to the user cluster API server
 # IMPACT: kube-apiserver cert generation and admin.kubeconfig server URL
-EXTERNAL_API_DNS_NAME=managed.example.com
+export EXTERNAL_API_DNS_NAME=managed.example.com
 
 # the external port on which to connect to the user cluster API server
 # IMPACT: admin.kubeconfig server URL
-EXTERNAL_API_PORT=31123
+export EXTERNAL_API_PORT=31123
+
+# the command to use when running containers
+export CONTAINER_CLI=podman

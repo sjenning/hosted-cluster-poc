@@ -23,7 +23,7 @@ data:
   ca.crt: ${CABUNDLE}
 EOF
 
-export OPENSHIFT_APISERVER_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
+export OPENSHIFT_APISERVER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
 envsubst < openshift-apiserver-deployment.yaml > ../manifests/managed/openshift-apiserver-deployment.yaml
 cp openshift-apiserver-service.yaml ../manifests/managed
 
@@ -50,6 +50,3 @@ EOF
 done
 
 cp openshift-apiserver-user-*.yaml ../manifests/user
-
-
-
