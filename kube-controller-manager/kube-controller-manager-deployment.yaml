@@ -14,7 +14,6 @@ spec:
       labels:
         app: kube-controller-manager
     spec:
-      automountServiceAccountToken: false
       containers:
       - name: kube-controller-manager
         image: ${HYPERKUBE_IMAGE}
@@ -23,10 +22,20 @@ spec:
         - kube-controller-manager
         args:
         - "--openshift-config=/etc/kubernetes/config.yaml"
+        - "--kubeconfig=/etc/kubernetes/kubeconfig"
         volumeMounts:
         - mountPath: /etc/kubernetes/
           name: secret
+        - mountPath: /var/run/kubernetes
+          name: certdir
+        - mountPath: /var/log/kube-controller-manager
+          name: logs
+        workingDir: /var/log/kube-controller-manager
       volumes:
       - secret:
           secretName: kube-controller-manager
         name: secret
+      - emptyDir: {}
+        name: logs
+      - emptyDir: {}
+        name: certdir

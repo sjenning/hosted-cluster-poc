@@ -31,7 +31,12 @@ spec:
         volumeMounts:
         - mountPath: /etc/kubernetes/
           name: secret
+        - mountPath: /var/run/kubernetes/
+          name: cert
+        workDir: /var/run/kubernetes
       volumes:
       - secret:
           secretName: kube-scheduler
         name: secret
+      - emptyDir: {}
+        name: cert
