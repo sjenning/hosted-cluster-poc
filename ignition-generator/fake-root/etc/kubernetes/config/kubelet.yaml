@@ -9,8 +9,9 @@ cgroupDriver: systemd
 clusterDNS:
   - 172.31.0.10
 clusterDomain: cluster.local
+featureGates:
+  RotateKubeletServerCertificate: true
 runtimeRequestTimeout: 10m
 serializeImagePulls: false
+serverTLSBootstrap: true
 staticPodPath: /etc/kubernetes/manifests
-tlsCertFile: /var/lib/kubernetes/kubelet-server.pem
-tlsPrivateKeyFile: /var/lib/kubernetes/kubelet-server-key.pem

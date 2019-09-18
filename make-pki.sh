@@ -61,7 +61,7 @@ function generate_client_kubeconfig() {
   generate_client_key_cert "${1}" "${2}" "${3}" "${4}" "${5}"
 
   kubectl config set-cluster default \
-    --certificate-authority=${ca}.pem \
+    --certificate-authority=root-ca.pem \
     --embed-certs=true \
     --server=https://${server} \
     --kubeconfig=${file}.kubeconfig
@@ -187,11 +187,8 @@ generate_ca "cluster-signer"
 # admin kubeconfig
 generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
-NODES="user-worker-0"
-for node in ${NODES}; do
-generate_client_kubeconfig "root-ca" "kubelet" "system:node:${node}" "system:nodes" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
-generate_client_key_cert "root-ca" "kubelet-server" "system:node:${node}" "system:nodes" "${node},127.0.0.1"
-done
+# kubelet bootstrapper kubeconfig
+generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # kube-controller-manager
 generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters" "kube-apiserver"
@@ -222,6 +219,6 @@ generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "ope
 # openshift-controller-manager
 generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
 
-cat root-ca.pem cluster-signer.pem > ca-bundle.pem
+cat root-ca.pem cluster-signer.pem > combined-ca.pem
 
 rm -f *.csr
