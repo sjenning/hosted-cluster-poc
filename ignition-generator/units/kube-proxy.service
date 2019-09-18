@@ -1,8 +1,6 @@
 [Unit]
 Description=Kubernetes Kube Proxy
 Documentation=https://github.com/kubernetes/kubernetes
-Requires=kube-apiserver.service
-After=kube-apiserver.service
 
 [Service]
 ExecStartPre=/usr/sbin/modprobe br_netfilter
