@@ -23,6 +23,6 @@ data:
   config.yaml: $(encode config.yaml)
 EOF
 
-export HYPERKUBE_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image hyperkube)
+export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
 cp kube-apiserver-service.yaml ../manifests/managed
