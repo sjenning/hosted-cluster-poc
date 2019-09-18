@@ -217,7 +217,10 @@ generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.e
 generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
 
 # openshift-apiserver
-generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift.default.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift-apiserver.default.svc.cluster.local"
+
+# openshift-controller-manager
+generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
 
 cat root-ca.pem cluster-signer.pem > ca-bundle.pem
 
