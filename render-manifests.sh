@@ -2,8 +2,6 @@
 
 set -eux
 
-export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
-
 source config.sh
 
 # make-pki.sh does not remove the /pki directory and does not regenerate certs that already exist.
