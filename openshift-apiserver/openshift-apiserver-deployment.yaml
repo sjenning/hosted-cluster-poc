@@ -24,7 +24,12 @@ spec:
         volumeMounts:
         - mountPath: /etc/kubernetes/
           name: secret
+        - mountPath: /var/run/kubernetes
+          name: logs
+        workingDir: /var/run/kubernetes
       volumes:
       - secret:
           secretName: openshift-apiserver
         name: secret
+      - emptyDir: {}
+        name: logs

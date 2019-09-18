@@ -14,7 +14,7 @@ kind: Secret
 metadata:
   name: openshift-apiserver
 data:
-  kubeconfig: $(encode ../pki/admin.kubeconfig)
+  kubeconfig: $(encode ../pki/service-admin.kubeconfig)
   server.crt: $(encode ../pki/openshift-apiserver-server.pem)
   server.key: $(encode ../pki/openshift-apiserver-server-key.pem)
   etcd-client.crt: $(encode ../pki/etcd-client.pem)
