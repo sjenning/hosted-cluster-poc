@@ -14,7 +14,7 @@ kind: Secret
 metadata:
   name: openshift-controller-manager
 data:
-  kubeconfig: $(encode ../pki/admin.kubeconfig)
+  kubeconfig: $(encode ../pki/service-admin.kubeconfig)
   server.crt: $(encode ../pki/openshift-controller-manager-server.pem)
   server.key: $(encode ../pki/openshift-controller-manager-server-key.pem)
   ca.crt: $(encode ../pki/root-ca.pem)

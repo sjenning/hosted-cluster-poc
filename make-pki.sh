@@ -190,6 +190,9 @@ generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" 
 # kubelet bootstrapper kubeconfig
 generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
+# service client admin kubeconfig
+generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters" "kube-apiserver"
+
 # kube-controller-manager
 generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters" "kube-apiserver"
 if [ ! -e "service-account-key.pem" ]; then 
