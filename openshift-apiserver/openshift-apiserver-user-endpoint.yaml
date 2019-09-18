@@ -1,11 +1,11 @@
 apiVersion: v1
-kind: Service
+kind: Endpoints
 metadata:
   name: openshift-apiserver
-spec:
-  selector:
-    app: openshift-apiserver
+subsets:
+- addresses:
+  - ip: 172.30.0.20
   ports:
   - name: https
     port: 443
-    targetPort: 8443
+    protocol: TCP

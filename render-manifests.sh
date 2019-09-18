@@ -13,7 +13,7 @@ source config.sh
 rm -rf manifests
 mkdir -p manifests/managed manifests/user
 
-for component in etcd kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver cluster-version-operator cluster-bootstrap; do
+for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver; do
     pushd ${component}
     ./render.sh
     popd

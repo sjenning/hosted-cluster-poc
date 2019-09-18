@@ -6,7 +6,9 @@ source ../lib/common.sh
 
 CABUNDLE="$(encode ../pki/root-ca.pem)"
 
-cat > ../manifests/user/openshift-apiserver-secret.yaml <<EOF 
+# managed
+
+cat > ../manifests/managed/openshift-apiserver-secret.yaml <<EOF 
 apiVersion: v1
 kind: Secret
 metadata:
@@ -20,6 +22,12 @@ data:
   config.yaml: $(encode config.yaml)
   ca.crt: ${CABUNDLE}
 EOF
+
+export OPENSHIFT_APISERVER_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
+envsubst < openshift-apiserver-deployment.yaml > ../manifests/managed/openshift-apiserver-deployment.yaml
+cp openshift-apiserver-service.yaml ../manifests/managed
+
+# user
 
 rm -f ../manifests/user/openshift-apiserver-apiservices.yaml
 for apiservice in v1.apps.openshift.io v1.authorization.openshift.io v1.build.openshift.io v1.image.openshift.io v1.oauth.openshift.io v1.project.openshift.io v1.quota.openshift.io v1.route.openshift.io v1.security.openshift.io v1.template.openshift.io v1.user.openshift.io; do
@@ -41,6 +49,7 @@ spec:
 EOF
 done
 
-export OPENSHIFT_APISERVER_IMAGE=$(podman run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
-envsubst < openshift-apiserver-deployment.yaml > ../manifests/user/openshift-apiserver-deployment.yaml
-cp openshift-apiserver-service.yaml ../manifests/user
+cp openshift-apiserver-user-*.yaml ../manifests/user
+
+
+

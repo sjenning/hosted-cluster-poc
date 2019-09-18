@@ -2,7 +2,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: openshift-apiserver
-  namespace: default
 spec:
   replicas: 1
   strategy:

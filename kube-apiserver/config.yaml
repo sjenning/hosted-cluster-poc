@@ -16,7 +16,7 @@ admission:
         kind: RestrictedEndpointsAdmissionConfig
         restrictedCIDRs:
         - 10.128.0.0/14
-        - 172.30.0.0/16
+        - 172.31.0.0/16
 aggregatorConfig:
   proxyClientInfo:
     certFile: "/etc/kubernetes/proxy-client.crt"
@@ -105,7 +105,7 @@ projectConfig:
 serviceAccountPublicKeyFiles:
 - "/etc/kubernetes/service-account.pub"
 servicesNodePortRange: 30000-32767
-servicesSubnet: 172.30.0.0/16
+servicesSubnet: 172.31.0.0/16
 servingInfo:
   bindAddress: 0.0.0.0:6443
   bindNetwork: tcp4

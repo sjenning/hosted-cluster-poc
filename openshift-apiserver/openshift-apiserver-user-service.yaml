@@ -3,9 +3,6 @@ kind: Service
 metadata:
   name: openshift-apiserver
 spec:
-  selector:
-    app: openshift-apiserver
   ports:
   - name: https
     port: 443
-    targetPort: 8443

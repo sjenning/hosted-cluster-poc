@@ -7,7 +7,7 @@ authentication:
     enabled: false
 cgroupDriver: systemd
 clusterDNS:
-  - 172.30.0.10
+  - 172.31.0.10
 clusterDomain: cluster.local
 runtimeRequestTimeout: 10m
 serializeImagePulls: false

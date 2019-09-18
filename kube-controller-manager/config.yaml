@@ -53,7 +53,7 @@ extendedArguments:
   service-account-private-key-file:
   - "/etc/kubernetes/service-account"
   service-cluster-ip-range:
-  - 172.30.0.0/16
+  - 172.31.0.0/16
   use-service-account-credentials:
   - 'true'
 serviceServingCert:
