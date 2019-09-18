@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: openshift-apiserver
 spec:
+  clusterIP: 172.30.0.20
   selector:
     app: openshift-apiserver
   ports:
