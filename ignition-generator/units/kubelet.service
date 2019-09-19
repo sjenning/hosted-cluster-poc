@@ -7,10 +7,10 @@ Requires=crio.service
 [Service]
 ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
 ExecStart=/usr/bin/hyperkube kubelet \
-  --config=/etc/kubernetes/config/kubelet.yaml \
+  --config=/etc/kubernetes/kubelet.conf \
   --container-runtime=remote \
   --container-runtime-endpoint=/var/run/crio/crio.sock \
-  --bootstrap-kubeconfig=/var/lib/kubernetes/kubelet-bootstrap.kubeconfig \
+  --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig \
   --kubeconfig=/var/lib/kubelet/kubeconfig \
   --node-labels=node-role.kubernetes.io/worker,node-role.kubernetes.io/master \
   --v=2

@@ -2,4 +2,4 @@
 
 set -eux
 
-cp *.yaml ../manifests/user
+cp *.yaml *.yml ../manifests/user

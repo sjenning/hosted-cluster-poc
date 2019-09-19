@@ -3,9 +3,10 @@
 set -eux
 
 echo "copying PKI assets"
-rm -rf fake-root/var/lib/kubernetes
-mkdir -p fake-root/var/lib/kubernetes
-cp ../pki/kubelet-bootstrap.kubeconfig ../pki/kube-proxy.kubeconfig ../pki/root-ca.pem fake-root/var/lib/kubernetes
+cp ../pki/kubelet-bootstrap.kubeconfig fake-root/etc/kubernetes/kubeconfig
+# kubeconfig needs to be world readable because network-operator reads it for server URL
+chmod +r fake-root/etc/kubernetes/kubeconfig
+cp ../pki/root-ca.pem fake-root/etc/kubernetes/ca.crt
 echo "transpiling files"
 ./filetranspile -i base.ign -f fake-root -o tmp.ign
 echo "transpiling units"

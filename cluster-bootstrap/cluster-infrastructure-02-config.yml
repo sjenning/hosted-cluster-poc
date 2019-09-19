@@ -1,0 +1,16 @@
+apiVersion: config.openshift.io/v1
+kind: Infrastructure
+metadata:
+  creationTimestamp: null
+  name: cluster
+spec:
+  cloudConfig:
+    name: ""
+status:
+  apiServerInternalURI: https://tugboat.lab.variantweb.net:31123
+  apiServerURL: https://tugboat.lab.variantweb.net:31123
+  etcdDiscoveryDomain: lab.variantweb.net
+  infrastructureName: kubernetes
+  platform: None
+  platformStatus:
+    type: None
