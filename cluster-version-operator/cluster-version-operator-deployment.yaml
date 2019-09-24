@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
       - name: cluster-version-operator
-        image: quay.io/csrwng/release:hosted
+        image: ${RELEASE_IMAGE}
         imagePullPolicy: Always
         args:
           - "start"
-          - "--release-image=quay.io/csrwng/release:hosted"
+          - "--release-image=${RELEASE_IMAGE}"
           - "--enable-auto-update=false"
           - "--enable-default-cluster-version=true"
           - "--kubeconfig=/etc/kubernetes/kubeconfig"
