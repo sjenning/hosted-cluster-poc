@@ -76,7 +76,7 @@ auditConfig:
       omitStages:
       - RequestReceived
 authConfig:
-  #oauthMetadataFile: "/etc/kubernetes/static-pod-resources/configmaps/oauth-metadata/oauthMetadata"
+  oauthMetadataFile: "/etc/kubernetes/oauthMetadata"
   requestHeader:
     clientCA: "/etc/kubernetes/ca.crt"
     clientCommonNames:
