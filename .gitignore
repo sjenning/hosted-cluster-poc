@@ -5,3 +5,4 @@
 /config.sh
 ignition-generator/fake-root/etc/kubernetes/kubeconfig
 ignition-generator/fake-root/etc/kubernetes/ca.crt
+haproxy.cfg

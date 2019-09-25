@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver-proxy
+  namespace: kube-system
+  labels:
+    k8s-app: kube-apiserver-proxy
+spec:
+  hostNetwork: true
+  containers:
+  - name: haproxy
+    image: docker.io/haproxy:2.0.6
+    volumeMounts:
+    - name: config
+      mountPath: /usr/local/etc/haproxy
+  volumes:
+  - name: config
+    hostPath:
+      path: /etc/kubernetes/apiserver-proxy-config
