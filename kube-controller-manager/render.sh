@@ -20,5 +20,3 @@ EOF
 
 export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
-
-cp openshift-infra-namespace.yaml ../manifests/user
