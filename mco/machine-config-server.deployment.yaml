@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: machine-config-server1
+  namespace: openshift-machine-config-operator
+  labels:
+      app: machine-config-server1
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: machine-config-server1
+    spec:
+      containers:
+      - name: machine-config-server
+        image: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:208eaafa06705c78c2b20ec8cd8b65bf92e7780596e05c89984fd2da3be31485
+        command: ["/usr/bin/machine-config-server"]
+        args:
+          - "start"
+          - "--secure-port=8443"
+          - "--apiserver-url=https://api-int.yourcluster.openshift.com:6443"
+        resources:
+          requests:
+            cpu: 20m
+            memory: 50Mi
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/ssl/mcs
+        - name: node-bootstrap-token
+          mountPath: /etc/mcs/bootstrap-token
+      priorityClassName: "system-cluster-critical"
+      serviceAccountName: machine-config-server
+      volumes:
+      - name: node-bootstrap-token
+        secret:
+          secretName: node-bootstrapper-token
+      - name: certs
+        secret:
+          secretName: machine-config-server-tls1

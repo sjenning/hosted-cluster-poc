@@ -5,3 +5,5 @@
 /config.sh
 ignition-generator/fake-root/etc/kubernetes/kubeconfig
 ignition-generator/fake-root/etc/kubernetes/ca.crt
+ignition-generator/worker-remote.machineconfig.yaml
+ignition-generator/worker-remote-user-data.secret.yaml

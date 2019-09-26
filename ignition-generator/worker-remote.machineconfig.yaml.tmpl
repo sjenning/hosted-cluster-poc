@@ -1,0 +1,6 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: worker-remote
+spec:
+  config: ${WORKER_IGNITION_JSON}

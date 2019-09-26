@@ -4,7 +4,7 @@ set -eux
 
 source ../lib/common.sh
 
-cat > ../manifests/managed/kube-apiserver-secret.yaml <<EOF 
+cat > ../manifests/managed/kube-apiserver-secret.yaml <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -26,3 +26,4 @@ EOF
 export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
 cp kube-apiserver-service.yaml ../manifests/managed
+cp kube-apiserver.route.yaml ../manifests/managed

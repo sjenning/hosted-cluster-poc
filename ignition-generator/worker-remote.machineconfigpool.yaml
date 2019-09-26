@@ -1,0 +1,10 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  labels:
+    machineconfiguration.openshift.io/mco-built-in: ""
+  name: worker-remote
+spec:
+  configuration:
+    name: worker-remote
+  paused: false
