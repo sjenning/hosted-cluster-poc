@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: openshift-apiserver
+  name: openshift-oauthserver
 spec:
-  clusterIP: 172.21.0.20
+  clusterIP: 172.22.0.20
   selector:
-    app: openshift-apiserver
+    app: openshift-oauthserver
   ports:
   - name: https
     port: 443

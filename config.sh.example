@@ -3,14 +3,14 @@ export NAMESPACE=hosted
 
 # the name external name on which to connect to the user cluster API server
 # IMPACT: kube-apiserver cert generation and admin.kubeconfig server URL
-export EXTERNAL_API_DNS_NAME=managed.example.com
+export EXTERNAL_API_DNS_NAME=c1.us-east.containers.cloud.ibm.com
 
 # the external port on which to connect to the user cluster API server
 # IMPACT: admin.kubeconfig server URL
 export EXTERNAL_API_PORT=31123
 
 # the command to use when running containers
-export CONTAINER_CLI=podman
+export CONTAINER_CLI=docker
 
 # OKD/OCP release image from which to get component image pull specs
 export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
