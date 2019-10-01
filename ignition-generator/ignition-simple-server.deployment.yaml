@@ -1,0 +1,28 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: ignition-simple-server
+  namespace: openshift-machine-config-operator
+spec:
+  selector:
+    matchLabels:
+      app: ignition-simple-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ignition-simple-server
+    spec:
+      containers:
+      - name: ignition-simple-server
+        image: nginx:1.17.4
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: configs
+          mountPath: "/usr/share/nginx/html"
+          readOnly: true
+      volumes:
+      - name: configs
+        secret:
+          secretName: remote-worker-ignition

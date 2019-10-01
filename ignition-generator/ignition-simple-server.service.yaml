@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ignition-simple-server
+  name: ignition-simple-server
+  namespace: openshift-machine-config-operator
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ignition-simple-server
