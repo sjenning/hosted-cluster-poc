@@ -5,3 +5,5 @@
 /config.sh
 ignition-generator/fake-root/etc/kubernetes/kubeconfig
 ignition-generator/fake-root/etc/kubernetes/ca.crt
+ignition-generator/fake-root/var/lib/kubelet/config.json
+/pull-secret
