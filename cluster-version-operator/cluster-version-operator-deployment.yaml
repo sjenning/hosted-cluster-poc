@@ -25,12 +25,17 @@ spec:
           - "--enable-default-cluster-version=true"
           - "--kubeconfig=/etc/kubernetes/kubeconfig"
           - "--v=4"
-          - "--exclude-manifests=.*"
-          - "--include-manifests=.*_cluster-network-operator_.*"
-          - "--include-manifests=.*_dns-operator_.*"
-          - "--include-manifests=.*_console-operator_.*"
-          - "--include-manifests=.*_cluster-samples-operator_.*"
-          - "--include-manifests=.*_cluster-node-tuning-operator_.*"
+          - "--exclude-manifests=.*_kube-apiserver-operator_.*"
+          - "--exclude-manifests=.*_kube-controller-manager-operator_.*"
+          - "--exclude-manifests=.*_kube-scheduler-operator_.*"
+          - "--exclude-manifests=.*_machine-api-operator_.*"
+          - "--exclude-manifests=.*_openshift-apiserver-operator_.*"
+          - "--exclude-manifests=.*_cluster-autoscaler-operator_.*"
+          - "--exclude-manifests=.*_cluster-machine-approver_.*"
+          - "--exclude-manifests=.*_openshift-controller-manager-operator_.*"
+          - "--exclude-manifests=.*_cluster-openshift-controller-manager-operator_.*"
+          - "--exclude-manifests=.*_insights-operator_.*"
+          - "--exclude-manifests=.*_machine-config-operator_.*"
         resources:
           requests:
             cpu: 20m
