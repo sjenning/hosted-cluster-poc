@@ -7,9 +7,9 @@ spec:
   cloudConfig:
     name: ""
 status:
-  apiServerInternalURI: https://tugboat.lab.variantweb.net:31123
-  apiServerURL: https://tugboat.lab.variantweb.net:31123
-  etcdDiscoveryDomain: lab.variantweb.net
+  apiServerInternalURI: https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}
+  apiServerURL: https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}
+  etcdDiscoveryDomain: ${BASE_DOMAIN}
   infrastructureName: kubernetes
   platform: None
   platformStatus:
