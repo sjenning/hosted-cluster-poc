@@ -2,7 +2,10 @@
 
 set -eux
 
+source ../config.sh
 source ../lib/common.sh
+
+export OAUTH_ROUTE="oauth-openshift.${INGRESS_SUBDOMAIN}"
 
 cat > oauthMetadata.json <<EOF
 {
@@ -31,6 +34,7 @@ cat > oauthMetadata.json <<EOF
 }
 EOF
 
+envsubst < config.yaml > config.yaml.rendered
 cat > ../manifests/managed/kube-apiserver-secret.yaml <<EOF 
 apiVersion: v1
 kind: Secret
@@ -47,11 +51,10 @@ data:
   proxy-client.key: $(encode ../pki/kube-apiserver-aggregator-proxy-client-key.pem)
   ca.crt: $(encode ../pki/combined-ca.pem)
   service-account.pub: $(encode ../pki/service-account.pem)
-  config.yaml: $(encode config.yaml)
+  config.yaml: $(encode config.yaml.rendered)
   oauthMetadata: $(encode oauthMetadata.json)
 EOF
-
-rm -f oauthMetadata.json
+rm -f config.yaml.rendered oauthMetadata.json
 
 export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml

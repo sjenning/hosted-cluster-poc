@@ -2,12 +2,14 @@
 
 set -eux
 
+source ../config.sh
 source ../lib/common.sh
 
 CABUNDLE="$(encode ../pki/root-ca.pem)"
 
 # managed
 
+envsubst < config.yaml > config.yaml.rendered
 cat > ../manifests/managed/openshift-apiserver-secret.yaml <<EOF 
 apiVersion: v1
 kind: Secret
@@ -19,9 +21,10 @@ data:
   server.key: $(encode ../pki/openshift-apiserver-server-key.pem)
   etcd-client.crt: $(encode ../pki/etcd-client.pem)
   etcd-client.key: $(encode ../pki/etcd-client-key.pem)
-  config.yaml: $(encode config.yaml)
+  config.yaml: $(encode config.yaml.rendered)
   ca.crt: ${CABUNDLE}
 EOF
+rm -f config.yaml.rendered
 
 export OPENSHIFT_APISERVER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
 envsubst < openshift-apiserver-deployment.yaml > ../manifests/managed/openshift-apiserver-deployment.yaml

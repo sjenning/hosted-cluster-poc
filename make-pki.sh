@@ -150,7 +150,7 @@ fi
 generate_client_kubeconfig "root-ca" "kube-scheduler" "system:admin" "system:masters"
 
 # kube-apiserver
-generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.31.0.1,10.42.10.219,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.31.0.1,${EXTERNAL_API_IP_ADDRESS},kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
@@ -167,7 +167,7 @@ generate_client_key_cert "root-ca" "openshift-controller-manager-server" "opensh
 
 # openshift-ingress
 rm -f ingress-wildcard*
-generate_client_key_cert "ingress-signer" "ingress-wildcard" "*.apps.lab.variantweb.net" "openshift" "*.apps.lab.variantweb.net"
+generate_client_key_cert "ingress-signer" "ingress-wildcard" "*.${INGRESS_SUBDOMAIN}" "openshift" "*.${INGRESS_SUBDOMAIN}"
 cat ingress-signer.pem >> ingress-wildcard.pem
 
 cat root-ca.pem cluster-signer.pem ingress-signer.pem > combined-ca.pem
