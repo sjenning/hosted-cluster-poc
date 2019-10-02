@@ -1,0 +1,8 @@
+apiVersion: oauth.openshift.io/v1
+grantMethod: auto
+kind: OAuthClient
+metadata:
+  name: openshift-challenging-client
+redirectURIs:
+  - https://${DOMAIN}:32433/oauth/token/implicit
+respondWithChallenges: true
