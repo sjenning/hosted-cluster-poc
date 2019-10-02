@@ -38,6 +38,8 @@ apiServerArguments:
   - etcd3
   storage-media-type:
   - application/vnd.kubernetes.protobuf
+  advertise-address:
+  - "10.42.10.219"
 auditConfig:
   auditFilePath: "/var/log/kube-apiserver/audit.log"
   enabled: true
@@ -74,7 +76,7 @@ auditConfig:
       omitStages:
       - RequestReceived
 authConfig:
-  #oauthMetadataFile: "/etc/kubernetes/static-pod-resources/configmaps/oauth-metadata/oauthMetadata"
+  oauthMetadataFile: "/etc/kubernetes/oauthMetadata"
   requestHeader:
     clientCA: "/etc/kubernetes/ca.crt"
     clientCommonNames:

@@ -14,3 +14,6 @@ export CONTAINER_CLI=docker
 
 # OKD/OCP release image from which to get component image pull specs
 export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
+
+# the route to the Openshift OAuth Server as it will be in the user cluster
+export OAUTH_ROUTE=oauth-openshift.apps.example.com
