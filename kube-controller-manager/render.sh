@@ -11,7 +11,7 @@ metadata:
   name: kube-controller-manager
 data:
   kubeconfig: $(encode ../pki/kube-controller-manager.kubeconfig)
-  ca.crt: $(encode ../pki/root-ca.pem)
+  ca.crt: $(encode ../pki/combined-ca.pem)
   service-account: $(encode ../pki/service-account-key.pem)
   config.yaml: $(encode config.yaml)
   cluster-signer.crt: $(encode ../pki/cluster-signer.pem)
