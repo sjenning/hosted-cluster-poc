@@ -4,7 +4,7 @@ metadata:
   name: openshift-oauthserver
 subsets:
 - addresses:
-  - ip: 172.22.0.20
+  - ip: 172.21.0.21
   ports:
   - name: https
     port: 443

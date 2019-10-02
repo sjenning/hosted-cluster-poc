@@ -26,10 +26,10 @@ oauthConfig:
     method: deny
     serviceAccountMethod: prompt
   identityProviders: []
-  loginURL: https://api.billsmafia.tylerlovesfloridaalot.com:6443
+  loginURL: https://marktest2.us-east.containers.appdomain.cloud:6443
   masterCA: "/etc/kubernetes/ca.crt"
-  masterPublicURL: https://oauth-openshift.apps.marktest2.us-east.containers.appdomain.cloud
-  masterURL: https://oauth-openshift.openshift-authentication.svc
+  masterPublicURL: https://marktest2.us-east.containers.appdomain.cloud
+  masterURL: https://marktest2.us-east.containers.appdomain.cloud
   sessionConfig:
     sessionMaxAgeSeconds: 300
     sessionName: ssn
@@ -44,7 +44,7 @@ oauthConfig:
 servingInfo:
   bindAddress: 0.0.0.0:6443
   bindNetwork: tcp4
-  certFile: "/var/config/system/secrets/v4-0-config-system-serving-cert/tls.crt"
+  certFile: /etc/kubernetes/server.crt
   cipherSuites:
     - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
     - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
@@ -62,14 +62,14 @@ servingInfo:
     - TLS_RSA_WITH_AES_256_GCM_SHA384
     - TLS_RSA_WITH_AES_128_CBC_SHA
     - TLS_RSA_WITH_AES_256_CBC_SHA
-  keyFile: "/var/config/system/secrets/v4-0-config-system-serving-cert/tls.key"
+  keyFile: /etc/kubernetes/server.key
   maxRequestsInFlight: 1000
   minTLSVersion: VersionTLS12
   namedCertificates:
-    - certFile: "/var/config/system/secrets/v4-0-config-system-router-certs/apps.marktest2.us-east.containers.appdomain.cloud "
-      keyFile: "/var/config/system/secrets/v4-0-config-system-router-certs/apps.marktest2.us-east.containers.appdomain.cloud "
+    - certFile: /etc/kubernetes/server.crt
+      keyFile: /etc/kubernetes/server.key
       names:
-        - "*.apps.marktest2.us-east.containers.appdomain.cloud"
+        - "*.marktest2.us-east.containers.appdomain.cloud"
   requestTimeoutSeconds: 300
 storageConfig:
   ca: ''

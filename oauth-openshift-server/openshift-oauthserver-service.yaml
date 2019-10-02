@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: openshift-oauthserver
 spec:
-  clusterIP: 172.22.0.20
+  clusterIP: 172.21.0.21
   selector:
     app: openshift-oauthserver
   ports:
   - name: https
+    nodePort: 32433
     port: 443
-    targetPort: 8443
+    targetPort: 6443
+  sessionAffinity: None
+  type: NodePort
