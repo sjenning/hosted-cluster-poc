@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  v4-0-config-system-session: eyJraW5kIjoiU2Vzc2lvblNlY3JldHMiLCJhcGlWZXJzaW9uIjoidjEiLCJzZWNyZXRzIjpbeyJhdXRoZW50aWNhdGlvbiI6IlRoTUhkLXNEb1B2aHZ3bE14M3I1UEVsaFRPSUpPcDNzY3BuZXFZeWRtR3I0Zk9zV2dSV2RKcVlpeU5WMy01SUMiLCJlbmNyeXB0aW9uIjoiRERlcmNxcWZ3eWh6M0xzQ09mb09MZFh6elRiZDBhUE4ifV19
+kind: Secret
+metadata:
+  labels:
+    app: oauth-openshift
+  name: v4-0-config-system-session
+  resourceVersion: "11639"
+  selfLink: /api/v1/namespaces/hosted/secrets/v4-0-config-system-session
+  uid: 0b75674b-df9e-11e9-a8a7-02703695dddc
+type: Opaque
