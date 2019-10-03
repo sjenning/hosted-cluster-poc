@@ -60,7 +60,7 @@ imagePolicyConfig:
 projectConfig:
   projectRequestMessage: ''
 routingConfig:
-  subdomain: apps.lab.variantweb.net
+  subdomain: ${INGRESS_SUBDOMAIN}
 storageConfig:
   urls:
   - https://etcd-client:2379

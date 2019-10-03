@@ -25,11 +25,7 @@ function generate_client_key_cert() {
     },
     "names": [
       {
-        "C": "US",
-        "L": "Austin",
-        "O": "${org}",
-        "OU": "Kubernetes",
-        "ST": "Texas"
+        "O": "${org}"
       }
     ]
   }
@@ -93,60 +89,9 @@ function generate_ca() {
     "key": {
       "algo": "rsa",
       "size": 2048
-    },
-    "names": [
-      {
-        "C": "US",
-        "L": "Austin",
-        "O": "Kubernetes",
-        "OU": "root-ca",
-        "ST": "Texas"
-      }
-    ]
-  }
-EOF
-}
-
-function generate_intermediate_ca() {
-  rootca="$1"
-  name="$2"
-
-  if [ -f "${name}.pem" ]; then return 0; fi
-
-  cat <<EOF | cfssl gencert -initca - | cfssljson -bare ${name}
-  {
-    "CN": "${name}",
-    "key": {
-      "algo": "rsa",
-      "size": 2048
-    },
-    "names": [
-      {
-        "C": "US",
-        "L": "Austin",
-        "O": "Kubernetes",
-        "OU": "root-ca",
-        "ST": "Texas"
-      }
-    ]
-  }
-EOF
-
-  cat > ${name}-config.json <<EOF 
-  {
-    "signing": {
-      "default": {
-        "usages": ["digital signature","cert sign","crl sign","signing"],
-        "expiry": "8760h",
-        "ca_constraint": {"is_ca": true, "max_path_len":0, "max_path_len_zero": true}
-      }
     }
   }
 EOF
-
-  cfssl sign -ca ${rootca}.pem -ca-key ${rootca}-key.pem -config ${name}-config.json ${name}.csr | cfssljson -bare ${name}
-
-  rm ${name}.csr ${name}-config.json
 }
 
 function generate_secret() {
@@ -183,6 +128,7 @@ EOF
 # generate CAs
 generate_ca "root-ca"
 generate_ca "cluster-signer"
+generate_ca "ingress-signer"
 
 # admin kubeconfig
 generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
@@ -200,33 +146,35 @@ if [ ! -e "service-account-key.pem" ]; then
   openssl rsa -in service-account-key.pem -pubout > service-account.pem
 fi
 
-# kube-proxy
-generate_client_kubeconfig "root-ca" "kube-proxy" "system:kube-proxy" "kubernetes" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
-
 # kube-scheduler
 generate_client_kubeconfig "root-ca" "kube-scheduler" "system:admin" "system:masters"
 
 # kube-apiserver
-generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.31.0.1,10.42.10.219,kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},172.31.0.1,${EXTERNAL_API_IP_ADDRESS},kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
 generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
 
 
 # etcd
-generate_client_key_cert "root-ca" "etcd-client" "kubernetes" "kubernetes"
+generate_client_key_cert "root-ca" "etcd-client" "etcd-client" "kubernetes"
 generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
 generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
 
 # openshift-apiserver
-generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift-apiserver.default.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift-apiserver" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift-apiserver.default.svc.cluster.local"
 
 # openshift-controller-manager
-generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift-controller-manager" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
+
+# openshift-ingress
+rm -f ingress-wildcard*
+generate_client_key_cert "ingress-signer" "ingress-wildcard" "*.${INGRESS_SUBDOMAIN}" "openshift" "*.${INGRESS_SUBDOMAIN}"
+cat ingress-signer.pem >> ingress-wildcard.pem
 
 #openshift oauth server
-generate_client_key_cert "root-ca" "oauth-openshift" "openshift" "openshift" "oauth-openshift,oauth-openshift.${NAMESPACE}.svc,oauth-openshift.${NAMESPACE}.svc.cluster.local,${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT},${EXTERNAL_API_DNS_NAME}"
+generate_client_key_cert "root-ca" "oauth-openshift" "openshift" "openshift" "oauth-openshift,oauth-openshift.${NAMESPACE}.svc,oauth-openshift.${NAMESPACE}.svc.cluster.local,${EXTERNAL_API_DNS_NAME}"
 
-cat root-ca.pem cluster-signer.pem > combined-ca.pem
+cat root-ca.pem cluster-signer.pem ingress-signer.pem > combined-ca.pem
 
 rm -f *.csr

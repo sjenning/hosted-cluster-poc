@@ -1,0 +1,20 @@
+---
+- name: Deploy OCP Instances
+  hosts: localhost
+  gather_facts: false
+  vars:
+    servers:
+    - user-worker-0
+    - user-worker-1
+  tasks:
+  - name: Create workers
+    os_server:
+       state: present
+       name: "{{ item }}"
+       image: "rhcos"
+       key_name: yubikey
+       flavor: "m1.xlarge"
+       network: external
+       wait: no
+       userdata: "{{ lookup('file', '../../ignition-generator/bootstrap-final.ign') | string }}"
+    with_items: "{{ servers }}"

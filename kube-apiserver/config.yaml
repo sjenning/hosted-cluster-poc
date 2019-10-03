@@ -39,7 +39,7 @@ apiServerArguments:
   storage-media-type:
   - application/vnd.kubernetes.protobuf
   advertise-address:
-  - "10.42.10.219"
+  - "${EXTERNAL_API_IP_ADDRESS}"
 auditConfig:
   auditFilePath: "/var/log/kube-apiserver/audit.log"
   enabled: true
