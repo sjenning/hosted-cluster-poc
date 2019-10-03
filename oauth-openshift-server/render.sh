@@ -30,6 +30,6 @@ cp openshift-oauthserver-service.yaml ../manifests/managed
 
 # user
 
-
+envsubst < openshift-oauth-client.yaml > ../manifests/user/openshift-oauth-client.yaml
 cp openshift-oauthserver-user-*.yaml ../manifests/user
 cp v4-*.yaml ../manifests/managed
