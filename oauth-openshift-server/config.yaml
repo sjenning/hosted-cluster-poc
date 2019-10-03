@@ -21,15 +21,15 @@ kubeClientConfig:
   kubeConfig: "/etc/kubernetes/kubeconfig"
 oauthConfig:
   alwaysShowProviderSelection: false
-  assetPublicURL: https://console-openshift-console.apps.marktest2.us-east.containers.appdomain.cloud
+  assetPublicURL: https://$EXTERNAL_API_DNS_NAME:32433/console
   grantConfig:
     method: deny
     serviceAccountMethod: prompt
   identityProviders: []
-  loginURL: https://marktest2.us-east.containers.appdomain.cloud:6443
+  loginURL: https://$EXTERNAL_API_DNS_NAME:32433
   masterCA: "/etc/kubernetes/ca.crt"
-  masterPublicURL: https://marktest2.us-east.containers.appdomain.cloud
-  masterURL: https://marktest2.us-east.containers.appdomain.cloud
+  masterPublicURL: https://$EXTERNAL_API_DNS_NAME:32433
+  masterURL: https://$EXTERNAL_API_DNS_NAME:32433
   sessionConfig:
     sessionMaxAgeSeconds: 300
     sessionName: ssn
@@ -69,7 +69,7 @@ servingInfo:
     - certFile: /etc/kubernetes/server.crt
       keyFile: /etc/kubernetes/server.key
       names:
-        - "*.marktest2.us-east.containers.appdomain.cloud"
+        - "$EXTERNAL_API_DNS_NAME"
   requestTimeoutSeconds: 300
 storageConfig:
   ca: ''

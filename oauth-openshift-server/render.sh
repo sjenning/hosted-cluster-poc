@@ -7,6 +7,7 @@ source ../lib/common.sh
 CABUNDLE="$(encode ../pki/root-ca.pem)"
 
 # managed
+envsubst < config.yaml > config2.yaml
 
 cat > ../manifests/managed/openshift-oauthserver-secret.yaml <<EOF
 apiVersion: v1
@@ -19,7 +20,7 @@ data:
   server.key: $(encode ../pki/oauth-openshift-key.pem)
   etcd-client.crt: $(encode ../pki/etcd-client.pem)
   etcd-client.key: $(encode ../pki/etcd-client-key.pem)
-  config.yaml: $(encode config.yaml)
+  config.yaml: $(encode config2.yaml)
   ca.crt: ${CABUNDLE}
 EOF
 

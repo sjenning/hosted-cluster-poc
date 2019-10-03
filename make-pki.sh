@@ -225,7 +225,7 @@ generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift" "ope
 generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
 
 #openshift oauth server
-generate_client_key_cert "root-ca" "oauth-openshift" "openshift" "openshift" "oauth-openshift,oauth-openshift.${NAMESPACE}.svc,oauth-openshift.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "oauth-openshift" "openshift" "openshift" "oauth-openshift,oauth-openshift.${NAMESPACE}.svc,oauth-openshift.${NAMESPACE}.svc.cluster.local" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 cat root-ca.pem cluster-signer.pem > combined-ca.pem
 
