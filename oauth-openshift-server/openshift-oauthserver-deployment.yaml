@@ -29,12 +29,6 @@ spec:
             - mountPath: /var/config/system/secrets/v4-0-config-system-session
               name: v4-0-config-system-session
               readOnly: true
-            - mountPath: /var/config/system/configmaps/v4-0-config-system-cliconfig
-              name: v4-0-config-system-cliconfig
-              readOnly: true
-            - mountPath: /var/config/system/secrets/v4-0-config-system-router-certs
-              name: v4-0-config-system-router-certs
-              readOnly: true
             - mountPath: /var/config/system/secrets/v4-0-config-system-ocp-branding-template
               name: v4-0-config-system-ocp-branding-template
               readOnly: true
@@ -53,20 +47,6 @@ spec:
             - key: v4-0-config-system-session
               path: v4-0-config-system-session
           secretName: v4-0-config-system-session
-      - configMap:
-          defaultMode: 420
-          items:
-            - key: v4-0-config-system-cliconfig
-              path: v4-0-config-system-cliconfig
-          name: v4-0-config-system-cliconfig
-        name: v4-0-config-system-cliconfig
-      - name: v4-0-config-system-router-certs
-        secret:
-          defaultMode: 420
-          items:
-            - key: apps.billsmafia.tylerlovesfloridaalot.com
-              path: apps.billsmafia.tylerlovesfloridaalot.com
-          secretName: v4-0-config-system-router-certs
       - name: v4-0-config-system-ocp-branding-template
         secret:
           defaultMode: 420

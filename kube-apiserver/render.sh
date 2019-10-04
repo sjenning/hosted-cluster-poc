@@ -5,7 +5,6 @@ set -eux
 source ../config.sh
 source ../lib/common.sh
 
-export OAUTH_ROUTE="oauth-openshift.${INGRESS_SUBDOMAIN}"
 
 cat > oauthMetadata.json <<EOF
 {
