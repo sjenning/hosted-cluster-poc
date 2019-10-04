@@ -1,0 +1,49 @@
+# For a simple AWS configuration, you should only need to set the
+# PARENT_DOMAIN for your own configuration. All other defaults should
+# just work.
+
+
+# the domain of the existing public hosted zone that should contain the
+# user cluster's public records
+# (*configuration required)
+export PARENT_DOMAIN=example.com
+
+# namespace in the managed cluster in which to deploy the control plane
+export NAMESPACE=hosted
+
+# the base domain for the cluster
+export BASE_DOMAIN="${NAMESPACE}.${PARENT_DOMAIN}"
+
+# the name external name on which to connect to the user cluster API server
+# IMPACT: kube-apiserver cert generation and admin.kubeconfig server URL
+export EXTERNAL_API_DNS_NAME="api.${BASE_DOMAIN}"
+
+# the subdomain to be used for the ingress router
+export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
+
+# the external port on which to connect to the user cluster API server
+# IMPACT: admin.kubeconfig server URL
+# On AWS, defaults to 6443
+export EXTERNAL_API_PORT=6443
+
+# the command to use when running containers
+export CONTAINER_CLI=podman
+
+# OKD/OCP release image from which to get component image pull specs
+export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
+
+# the external port on which to connect to the user cluster API server
+# IMPACT: admin.kubeconfig server URL
+export API_NODEPORT=31123
+
+# Nodeport for the router's HTTP endpoint
+export ROUTER_NODEPORT_HTTP=32123
+
+# Nodeport for the router's HTTPS endpoint
+export ROUTER_NODEPORT_HTTPS=32124
+
+# dynamically set the EXTERNAL_API_IP_ADDRESS created by the contrib/aws/setup-infrastructure.sh script
+REPODIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+if [[ -f "${REPODIR}/config_api_ip.sh" ]]; then
+  source "${REPODIR}/config_api_ip.sh"
+fi
