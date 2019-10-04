@@ -1,1 +1,0 @@
-sed -i "s/oauth-openshift.apps.example.com/$DOMAIN/g" config.sh

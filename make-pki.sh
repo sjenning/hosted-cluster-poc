@@ -154,8 +154,6 @@ generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kuberne
 generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
-
-
 # etcd
 generate_client_key_cert "root-ca" "etcd-client" "etcd-client" "kubernetes"
 generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
