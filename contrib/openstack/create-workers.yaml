@@ -13,7 +13,7 @@
        name: "{{ item }}"
        image: "rhcos"
        key_name: yubikey
-       flavor: "m1.xlarge"
+       flavor: "worker"
        network: external
        wait: no
        userdata: "{{ lookup('file', '../../ignition-generator/bootstrap-final.ign') | string }}"
