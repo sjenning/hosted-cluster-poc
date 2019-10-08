@@ -1,5 +1,5 @@
 ---
-- name: Deploy OCP Instances
+- name: Create Workers
   hosts: localhost
   gather_facts: false
   vars:
@@ -7,7 +7,13 @@
     - user-worker-0
     - user-worker-1
   tasks:
-  - name: Create workers
+  - name: ensure worker instances do not already exist
+    os_server:
+       state: absent
+       name: "{{ item }}"
+       wait: no
+    with_items: "{{ servers }}"
+  - name: create workers instances
     os_server:
        state: present
        name: "{{ item }}"
