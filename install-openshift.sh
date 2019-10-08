@@ -26,7 +26,7 @@ echo "Rendering PKI"
 echo "Rendering manifests"
 rm -rf manifests
 mkdir -p manifests/managed manifests/user
-for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver machine-api user-manifests-bootstrapper; do
+for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver machine-api ca-operator user-manifests-bootstrapper; do
   pushd ${component}
   ./render.sh
   popd
