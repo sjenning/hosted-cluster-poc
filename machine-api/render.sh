@@ -19,5 +19,5 @@ EOF
 fi
 
 if [[ -f ./machineset.json ]]; then
-  cp ./machineset.json ../manifests/managed/machine-apiet.yaml
+  cp ./machineset.json ../manifests/managed/worker-machineset.yaml
 fi
