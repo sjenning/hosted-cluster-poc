@@ -8,6 +8,9 @@
 # (*configuration required)
 export PARENT_DOMAIN=example.com
 
+# none, aws, or openstack
+export PLATFORM=aws
+
 # namespace in the managed cluster in which to deploy the control plane
 export NAMESPACE=hosted
 
