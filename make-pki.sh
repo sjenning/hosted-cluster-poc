@@ -128,7 +128,6 @@ EOF
 # generate CAs
 generate_ca "root-ca"
 generate_ca "cluster-signer"
-generate_ca "ingress-signer"
 
 # admin kubeconfig
 generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
@@ -165,11 +164,6 @@ generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift-apise
 # openshift-controller-manager
 generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift-controller-manager" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
 
-# openshift-ingress
-rm -f ingress-wildcard*
-generate_client_key_cert "ingress-signer" "ingress-wildcard" "*.${INGRESS_SUBDOMAIN}" "openshift" "*.${INGRESS_SUBDOMAIN}"
-cat ingress-signer.pem >> ingress-wildcard.pem
-
-cat root-ca.pem cluster-signer.pem ingress-signer.pem > combined-ca.pem
+cat root-ca.pem cluster-signer.pem > combined-ca.pem
 
 rm -f *.csr
