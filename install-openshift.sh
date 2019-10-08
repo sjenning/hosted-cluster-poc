@@ -34,6 +34,11 @@ done
 touch pull-secret
 oc create secret generic pull-secret --from-file=.dockerconfigjson=pull-secret --type=kubernetes.io/dockerconfigjson -oyaml --dry-run > manifests/managed/pull-secret.yaml
 
+if [ "${PLATFORM}" != "none" ]; then
+  echo "Creating platform resources"
+  ./contrib/${PLATFORM}/setup.sh
+fi
+
 echo "Creating cluster"
 # use `create ns` instead of `new-project` in case management cluster in not OCP
 oc create ns ${NAMESPACE}

@@ -1,3 +1,6 @@
+# none, aws, or openstack
+export PLATFORM=none
+
 # namespace in the managed cluster in which to deploy the control plane
 export NAMESPACE=hosted
 

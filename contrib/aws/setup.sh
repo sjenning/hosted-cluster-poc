@@ -7,6 +7,7 @@ REPODIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../..
 source "${REPODIR}/config.sh"
 
 #Ensure make-pki is run first so we can create an ignition file
+# when this script is called from install-openshift.sh, this is already done
 ${REPODIR}/make-pki.sh
 
 pushd ${REPODIR}/ignition-generator
