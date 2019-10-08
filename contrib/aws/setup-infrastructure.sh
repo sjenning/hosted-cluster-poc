@@ -384,7 +384,7 @@ echo "Copying bootstrap ignition to bucket ${IGNITION_BUCKET}"
 aws s3 cp ${REPODIR}/ignition-generator/final.ign s3://${IGNITION_BUCKET}/final.ign --acl public-read
 
 # Create a bootstrap ignition that points to the final.ign in the S3 bucket
-cat <<EOF > "${REPODIR}/worker-machines/machine-user-data.ign"
+cat <<EOF > "${REPODIR}/machine-api/machine-user-data.ign"
 {"ignition":{"config":{"append":[{"source":"https://${IGNITION_BUCKET}.s3.amazonaws.com/final.ign","verification":{}}]},"security":{},"timeouts":{},"version":"2.2.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{}}
 EOF
 
@@ -409,4 +409,4 @@ del(.spec.template.spec.providerSpec.value.publicIp)|\
 .spec.template.spec.providerSpec.value.userDataSecret.name=\"${NAMESPACE}-worker-user-data\"|\
 .spec.template.spec.providerSpec.value += {loadBalancers:[{name:\"${ROUTERLBNAME}\",type:\"network\"}]}"
 
-cat "${machineset_json}" | jq "${machineset_xform}" > "${REPODIR}/worker-machines/machineset.json"
+cat "${machineset_json}" | jq "${machineset_xform}" > "${REPODIR}/machine-api/machineset.json"
