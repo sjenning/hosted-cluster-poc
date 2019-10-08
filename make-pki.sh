@@ -170,6 +170,9 @@ rm -f ingress-wildcard*
 generate_client_key_cert "ingress-signer" "ingress-wildcard" "*.${INGRESS_SUBDOMAIN}" "openshift" "*.${INGRESS_SUBDOMAIN}"
 cat ingress-signer.pem >> ingress-wildcard.pem
 
+#openshift oauth server
+generate_client_key_cert "root-ca" "oauth-openshift" "openshift" "openshift" "oauth-openshift,oauth-openshift.${NAMESPACE}.svc,oauth-openshift.${NAMESPACE}.svc.cluster.local,${EXTERNAL_API_DNS_NAME}"
+
 cat root-ca.pem cluster-signer.pem ingress-signer.pem > combined-ca.pem
 
 rm -f *.csr
