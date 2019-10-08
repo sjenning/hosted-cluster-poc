@@ -36,8 +36,8 @@ oc create secret generic pull-secret --from-file=.dockerconfigjson=pull-secret -
 
 echo "Creating cluster"
 # use `create ns` instead of `new-project` in case management cluster in not OCP
-oc create ns hosted
-oc project hosted
+oc create ns ${NAMESPACE}
+oc project ${NAMESPACE}
 cd manifests/managed
 oc apply -f pull-secret.yaml
 oc secrets link default pull-secret --for=pull
