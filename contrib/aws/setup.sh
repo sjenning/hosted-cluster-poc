@@ -411,3 +411,7 @@ del(.spec.template.spec.providerSpec.value.publicIp)|\
 .spec.template.spec.providerSpec.value += {loadBalancers:[{name:\"${ROUTERLBNAME}\",type:\"network\"}]}"
 
 cat "${machineset_json}" | jq "${machineset_xform}" > "${REPODIR}/machine-api/machineset.json"
+
+pushd "${REPODIR}/machine-api"
+./render.sh
+popd
