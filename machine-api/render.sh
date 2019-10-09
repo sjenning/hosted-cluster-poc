@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 source ../config.sh
 source ../lib/common.sh

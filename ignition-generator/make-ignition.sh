@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 echo "copying PKI assets"
 cp ../pki/kubelet-bootstrap.kubeconfig fake-root/etc/kubernetes/kubeconfig

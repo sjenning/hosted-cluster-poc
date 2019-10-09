@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ux
+set -u
 
 export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
 

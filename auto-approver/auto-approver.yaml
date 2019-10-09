@@ -16,7 +16,7 @@ spec:
     - -c
     - |-
       #!/bin/bash
-      set -eux
+      set -eu
       while true; do
          if oc get csr | grep Pending; then
             oc get csr | grep Pending | awk '{ print $1 }' | xargs oc adm certificate approve
