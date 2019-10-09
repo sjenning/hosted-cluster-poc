@@ -21,10 +21,13 @@ set -eu
 echo "Rendering PKI"
 ./make-pki.sh >/dev/null
 
+echo "Pulling release image"
+touch pull-secret
+REGISTRY_AUTH_FILE=$(pwd)/pull-secret ${CONTAINER_CLI} pull ${RELEASE_IMAGE} >/dev/null
+
 echo "Rendering manifests"
 rm -rf manifests
 mkdir -p manifests/managed manifests/user
-touch pull-secret
 oc create secret generic pull-secret --from-file=.dockerconfigjson=pull-secret --type=kubernetes.io/dockerconfigjson -oyaml --dry-run > manifests/managed/pull-secret.yaml
 oc create secret generic pull-secret -n openshift-config --from-file=.dockerconfigjson=pull-secret --type=kubernetes.io/dockerconfigjson -oyaml --dry-run > manifests/user/00-pull-secret.yaml
 for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver machine-api ca-operator route-setter user-manifests-bootstrapper; do
