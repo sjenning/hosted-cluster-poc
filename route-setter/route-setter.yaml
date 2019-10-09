@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: route-setter
+spec:
+  containers:
+  - image: ${NODE_IMAGE}
+    name: route-setter
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+    command:
+    - /bin/bash
+    args:
+    - -c
+    - |-
+      #!/bin/bash
+      set -ux
+      sleep 5
+      while true; do
+        if NODEIP=$(cat /work/nodeip); then
+          ip r del 10.128.0.0/14
+          ip r del 172.31.0.0/16
+          ip r add 10.128.0.0/14 via $NODEIP
+          ip r add 172.31.0.0/16 via $NODEIP
+          exit 0
+        fi
+        sleep 10
+      done
+    volumeMounts:
+    - mountPath: /work
+      name: work
+  - image: ${CLI_IMAGE}
+    env:
+    - name: KUBECONFIG
+      value: /var/run/secrets/kubeconfig/kubeconfig
+    name: node-ip-getter
+    command:
+    - /bin/bash
+    args:
+    - -c
+    - |-
+      #!/bin/bash
+      set -ux
+      while true; do
+        if NODEIP=$(oc get nodes -o jsonpath='{ $.items[0].status.addresses[?(@.type=="InternalIP")].address }'); then
+          echo $NODEIP > /work/nodeip
+          break
+        fi
+        sleep 10
+      done
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubeconfig
+      name: kubeconfig
+      readOnly: true
+    - mountPath: /work
+      name: work
+  restartPolicy: Never
+  hostNetwork: true
+  volumes:
+  - name: kubeconfig
+    secret:
+      secretName: kube-external-kubeconfig
+  - name: work
+    emptyDir: {}
