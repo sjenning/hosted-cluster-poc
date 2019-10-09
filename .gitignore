@@ -10,3 +10,4 @@ ignition-generator/fake-root/var/lib/kubelet/config.json
 /pull-secret
 /machine-api/*.json
 /machine-api/*.ign
+/kubeadmin-password
