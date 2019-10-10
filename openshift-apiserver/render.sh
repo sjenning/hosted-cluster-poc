@@ -28,7 +28,7 @@ rm -f config.yaml.rendered
 
 export OPENSHIFT_APISERVER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
 envsubst < openshift-apiserver-deployment.yaml > ../manifests/managed/openshift-apiserver-deployment.yaml
-cp openshift-apiserver-service.yaml ../manifests/managed
+envsubst < openshift-apiserver-service.yaml > ../manifests/managed/openshift-apiserver-service.yaml
 
 # user
 
@@ -52,4 +52,6 @@ spec:
 EOF
 done
 
-cp openshift-apiserver-user-*.yaml ../manifests/user
+for i in openshift-apiserver-user-*.yaml ; do
+  envsubst < $i > ../manifests/user/$i
+done

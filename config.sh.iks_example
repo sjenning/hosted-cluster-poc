@@ -2,21 +2,31 @@
 export PLATFORM=none
 
 # namespace in the managed cluster in which to deploy the control plane
-export NAMESPACE=hosted
+export NAMESPACE="${NAMESPACE:=hosted}"
+
+# pre-create namespace and services to find clusterIP and nodePort
+# use `create ns` instead of `new-project` in case management cluster in not OCP
+if ! oc get ns ${NAMESPACE} &>/dev/null; then
+  oc create ns ${NAMESPACE} >/dev/null
+  oc project ${NAMESPACE} >/dev/null
+  grep -v API_NODEPORT ./kube-apiserver/kube-apiserver-service.yaml | oc apply -f -
+  grep -v API_CLUSTERIP ./openshift-apiserver/openshift-apiserver-service.yaml | oc apply -f -
+fi
 
 # the name external name on which to connect to the user cluster API server
 # IMPACT: kube-apiserver cert generation and admin.kubeconfig server URL
-export EXTERNAL_API_DNS_NAME=managed.example.com
+export EXTERNAL_API_DNS_NAME=$(oc -n kube-system get cm ibm-cloud-cluster-ingress-info -o jsonpath='{.data.ingress-subdomain}')
 
 # the external IP on which to connect to the user cluster API server
 export EXTERNAL_API_IP_ADDRESS=$(dig +short ${EXTERNAL_API_DNS_NAME})
 
 # the external port on which to connect to the user cluster API server
 # IMPACT: admin.kubeconfig server URL
-export EXTERNAL_API_PORT=31123
+export EXTERNAL_API_PORT=$(oc get service kube-apiserver -o jsonpath='{.spec.ports[0].nodePort}')
 
 # the cluster IP to use for openshift-apiserver
-export API_CLUSTERIP=172.30.0.20
+#export API_CLUSTERIP=172.30.0.20
+export API_CLUSTERIP=$(oc get service openshift-apiserver -o jsonpath='{.spec.clusterIP}')
 
 # the command to use when running containers
 export CONTAINER_CLI=podman
