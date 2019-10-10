@@ -29,6 +29,9 @@ export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
 # On AWS, defaults to 6443
 export EXTERNAL_API_PORT=6443
 
+# the cluster IP to use for openshift-apiserver
+export API_CLUSTERIP=172.30.0.20
+
 # the command to use when running containers
 export CONTAINER_CLI=podman
 

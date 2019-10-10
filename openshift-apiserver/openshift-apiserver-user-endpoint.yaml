@@ -5,7 +5,7 @@ metadata:
   namespace: default
 subsets:
 - addresses:
-  - ip: 172.30.0.20
+  - ip: ${API_CLUSTERIP}
   ports:
   - name: https
     port: 443

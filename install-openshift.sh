@@ -9,11 +9,6 @@ if [ -z "$KUBECONFIG" ]; then
   exit 1
 fi
 
-if oc get ns ${NAMESPACE} &>/dev/null; then
-  echo "namespace '${NAMESPACE}' already exists in the management cluster"
-  exit 1
-fi
-
 set -eu
 
 # make-pki.sh does not remove the /pki directory and does not regenerate certs that already exist.
@@ -46,7 +41,7 @@ fi
 
 echo "Applying management cluster resources"
 # use `create ns` instead of `new-project` in case management cluster in not OCP
-oc create ns ${NAMESPACE} >/dev/null
+oc get ns ${NAMESPACE} >/dev/null || oc create ns ${NAMESPACE} >/dev/null
 oc project ${NAMESPACE} >/dev/null
 pushd manifests/managed >/dev/null
 oc apply -f pull-secret.yaml >/dev/null
