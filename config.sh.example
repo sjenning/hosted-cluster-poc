@@ -15,6 +15,12 @@ export EXTERNAL_API_IP_ADDRESS=$(dig +short ${EXTERNAL_API_DNS_NAME})
 # IMPACT: admin.kubeconfig server URL
 export EXTERNAL_API_PORT=31123
 
+# the name external name on which to connect to the managed openvpn server
+export EXTERNAL_OPENVPN_DNS_NAME=managed.example.com
+
+# the external port on which to connect to the managed openvpn server
+export EXTERNAL_OPENVPN_PORT=1194
+
 # the cluster IP to use for openshift-apiserver
 export API_CLUSTERIP=172.30.0.20
 
@@ -29,3 +35,10 @@ export BASE_DOMAIN=example.com
 
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
+
+# the external port on which to connect to the user cluster API server
+# IMPACT: admin.kubeconfig server URL
+export API_NODEPORT=31123
+
+# the external port on which to connect to the managed openvpn server
+export OPENVPN_NODEPORT=31124
