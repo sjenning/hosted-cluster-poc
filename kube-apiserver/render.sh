@@ -56,6 +56,20 @@ data:
 EOF
 rm -f config.yaml.rendered oauthMetadata.json
 
+envsubst < kubernetes.conf > kubernetes.conf.rendered
+cat > ../manifests/managed/openvpn-client-secret.yaml <<EOF 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openvpn-client
+data:
+  tls.crt: $(encode ../pki/openvpn-client.pem)
+  tls.key: $(encode ../pki/openvpn-client-key.pem)
+  ca.crt: $(encode ../pki/openvpn-ca.pem)
+  kubernetes.conf: $(encode kubernetes.conf.rendered)
+EOF
+rm -f kubernetes.conf.rendered
+
 export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
 envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
 envsubst < kube-apiserver-service.yaml > ../manifests/managed/kube-apiserver-service.yaml
