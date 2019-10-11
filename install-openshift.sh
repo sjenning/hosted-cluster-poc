@@ -37,30 +37,30 @@ done
 if [ "${PLATFORM}" != "none" ]; then
   echo "Setting up platform resources"
   ./contrib/${PLATFORM}/setup.sh >/dev/null
+
+  echo "Applying management cluster resources"
+  # use `create ns` instead of `new-project` in case management cluster in not OCP
+  oc get ns ${NAMESPACE} &>/dev/null || oc create ns ${NAMESPACE} >/dev/null
+  oc project ${NAMESPACE} >/dev/null
+  pushd manifests/managed >/dev/null
+  oc apply -f pull-secret.yaml >/dev/null
+  oc secrets link default pull-secret --for=pull >/dev/null
+  rm -f pull-secret.yaml
+  oc apply -f . >/dev/null
+  popd >/dev/null
+
+  echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+  oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
+
+  echo "Waiting up to 15m for the cluster at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT} to initialize"
+  export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
+  while ! oc wait --for=condition=Available clusterversion/version --timeout=15m &>/dev/null; do
+    sleep 10
+  done
+
+  echo "Install complete!"
+  echo "To access the cluster as the system:admin user when using 'oc', run 'export $(pwd)/pki/admin.kubeconfig"
+  echo "To join additional nodes to the cluster, use the node-bootstrapper kubeconfig at $(pwd)/pki/kubelet-bootstrap.kubeconfig"
+  echo "Access the OpenShift web-console here: https://console-openshift-console.${INGRESS_SUBDOMAIN}"
+  echo "Login into the console with user: kubeadmin, password ${KUBEADMIN_PASSWORD}"
 fi
-
-echo "Applying management cluster resources"
-# use `create ns` instead of `new-project` in case management cluster in not OCP
-oc get ns ${NAMESPACE} &>/dev/null || oc create ns ${NAMESPACE} >/dev/null
-oc project ${NAMESPACE} >/dev/null
-pushd manifests/managed >/dev/null
-oc apply -f pull-secret.yaml >/dev/null
-oc secrets link default pull-secret --for=pull >/dev/null
-rm -f pull-secret.yaml
-oc apply -f . >/dev/null
-popd >/dev/null
-
-echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
-oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
-
-echo "Waiting up to 15m for the cluster at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT} to initialize"
-export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
-while ! oc wait --for=condition=Available clusterversion/version --timeout=15m &>/dev/null; do
-  sleep 10
-done
-
-echo "Install complete!"
-echo "To access the cluster as the system:admin user when using 'oc', run 'export $(pwd)/pki/admin.kubeconfig"
-echo "To join additional nodes to the cluster, use the node-bootstrapper kubeconfig at $(pwd)/pki/kubelet-bootstrap.kubeconfig"
-echo "Access the OpenShift web-console here: https://console-openshift-console.${INGRESS_SUBDOMAIN}"
-echo "Login into the console with user: kubeadmin, password ${KUBEADMIN_PASSWORD}"
