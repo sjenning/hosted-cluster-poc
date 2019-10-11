@@ -40,12 +40,28 @@ spec:
           timeoutSeconds: 10
         volumeMounts:
         - mountPath: /etc/kubernetes/
-          name: secret
+          name: kube-apiserver-secret
         - mountPath: /var/log/kube-apiserver/
           name: logs
+      - name: openvpn-client
+        image: quay.io/sjenning/poc:openvpn
+        imagePullPolicy: Always
+        command:
+        - /usr/sbin/openvpn
+        - --config
+        - /etc/openvpn/kubernetes.conf
+        workingDir: /etc/openvpn/
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /etc/openvpn/
+          name: openvpn-client-secret
       volumes:
       - secret:
           secretName: kube-apiserver
-        name: secret
+        name: kube-apiserver-secret
       - emptyDir: {}
         name: logs
+      - secret:
+          secretName: openvpn-client
+        name: openvpn-client-secret

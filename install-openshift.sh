@@ -28,7 +28,7 @@ echo $KUBEADMIN_PASSWORD > kubeadmin-password
 oc create secret generic kubeadmin -n kube-system --from-literal=kubeadmin="$(htpasswd -bnBC 10 "" "${KUBEADMIN_PASSWORD}" | tr -d ':\n')" -oyaml --dry-run > manifests/user/kubeadmin-secret.yaml
 oc create secret generic pull-secret --from-file=.dockerconfigjson=pull-secret --type=kubernetes.io/dockerconfigjson -oyaml --dry-run > manifests/managed/pull-secret.yaml
 oc create secret generic pull-secret -n openshift-config --from-file=.dockerconfigjson=pull-secret --type=kubernetes.io/dockerconfigjson -oyaml --dry-run > manifests/user/00-pull-secret.yaml
-for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver ca-operator route-setter user-manifests-bootstrapper; do
+for component in etcd kube-apiserver kube-controller-manager kube-scheduler cluster-bootstrap openshift-apiserver openshift-controller-manager openvpn-server cluster-version-operator auto-approver ca-operator route-setter user-manifests-bootstrapper; do
   pushd ${component} >/dev/null
   ./render.sh >/dev/null
   popd >/dev/null
@@ -41,7 +41,7 @@ fi
 
 echo "Applying management cluster resources"
 # use `create ns` instead of `new-project` in case management cluster in not OCP
-oc get ns ${NAMESPACE} >/dev/null || oc create ns ${NAMESPACE} >/dev/null
+oc get ns ${NAMESPACE} &>/dev/null || oc create ns ${NAMESPACE} >/dev/null
 oc project ${NAMESPACE} >/dev/null
 pushd manifests/managed >/dev/null
 oc apply -f pull-secret.yaml >/dev/null
@@ -49,6 +49,7 @@ oc secrets link default pull-secret --for=pull >/dev/null
 rm -f pull-secret.yaml
 oc apply -f . >/dev/null
 popd >/dev/null
+exit 0
 
 echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
