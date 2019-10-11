@@ -49,7 +49,6 @@ oc secrets link default pull-secret --for=pull >/dev/null
 rm -f pull-secret.yaml
 oc apply -f . >/dev/null
 popd >/dev/null
-exit 0
 
 echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
