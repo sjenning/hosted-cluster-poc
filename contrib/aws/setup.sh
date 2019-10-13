@@ -394,6 +394,11 @@ ensure_cname_record "${ZONE_ID}" "*.${INGRESS_SUBDOMAIN}" "${ROUTER_NLB_DNS_NAME
 cat <<EOF > "${REPODIR}/config_api_ip.sh"
 EXTERNAL_API_IP_ADDRESS="${API_PUBLIC_IP}"
 EOF
+# Call render again on the kube-apiserver so we get the latest
+# external IP
+pushd "${REPODIR}/kube-apiserver"
+./render.sh
+popd
 
 # Ensure that the workers security group allows access to node ports
 ensure_workers_allow_nodeport_access "${INFRANAME}"
