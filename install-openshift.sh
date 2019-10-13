@@ -50,6 +50,16 @@ rm -f pull-secret.yaml
 oc apply -f . >/dev/null
 popd >/dev/null
 
+# Allow privileged pods for this namespace
+# TODO: Investigate whether we can run without privileged
+if oc get scc &> /dev/null; then
+  svcacct="system:serviceaccount:${NAMESPACE}:default"
+  if ! oc get securitycontextconstraints.security.openshift.io/privileged -o jsonpath='{ .users }' | grep "${svcacct}"; then
+    oc patch securitycontextconstraints.security.openshift.io/privileged --type json --patch "[{\"op\": \"add\", \"path\": \"/users/-\", \"value\": \"${svcacct}\"}]"
+  fi
+fi
+
+
 echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
 
