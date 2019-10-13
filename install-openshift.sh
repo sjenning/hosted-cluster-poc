@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source config.sh
+source lib/common.sh
 
 export API_NODEPORT="${API_NODEPORT:-$EXTERNAL_API_PORT}"
 
@@ -16,9 +17,9 @@ set -eu
 echo "Creating PKI assets"
 ./make-pki.sh &>/dev/null
 
-echo "Pulling release image"
-touch pull-secret
-REGISTRY_AUTH_FILE=$(pwd)/pull-secret ${CONTAINER_CLI} pull ${RELEASE_IMAGE} >/dev/null
+echo "Retrieving release pull specs"
+export RELEASE_PULLSPECS="$(mktemp)"
+fetch_release_pullspecs
 
 echo "Rendering manifests"
 rm -rf manifests

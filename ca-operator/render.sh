@@ -15,5 +15,5 @@ data:
   kubeconfig: $(encode ../pki/admin.kubeconfig)
 EOF
 
-export CLI_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image cli)
+export CLI_IMAGE=$(image_for cli)
 envsubst '$CLI_IMAGE' < ca-operator-deployment.yaml > ../manifests/managed/ca-operator-deployment.yaml

@@ -28,13 +28,6 @@ export EXTERNAL_API_PORT=$(oc get service kube-apiserver -o jsonpath='{.spec.por
 #export API_CLUSTERIP=172.30.0.20
 export API_CLUSTERIP=$(oc get service openshift-apiserver -o jsonpath='{.spec.clusterIP}')
 
-# the command to use when running containers
-if [[ $(uname) != "Darwin" ]]; then
-    export CONTAINER_CLI=podman
-else
-    export CONTAINER_CLI=docker
-fi
-
 # OKD/OCP release image from which to get component image pull specs
 export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/v1/releasestream/4.2.0-0.okd/latest" | jq -r .pullSpec)
 

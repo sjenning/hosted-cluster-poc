@@ -70,6 +70,6 @@ data:
 EOF
 rm -f client.conf.rendered
 
-export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
+export HYPERKUBE_IMAGE=$(image_for hyperkube)
 envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
 envsubst < kube-apiserver-service.yaml > ../manifests/managed/kube-apiserver-service.yaml

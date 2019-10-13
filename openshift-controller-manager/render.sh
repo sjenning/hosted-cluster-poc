@@ -4,8 +4,8 @@ set -eu
 
 source ../lib/common.sh
 
-export DOCKER_BUILDER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image docker-builder)
-export DEPLOYER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image deployer)
+export DOCKER_BUILDER_IMAGE=$(image_for docker-builder)
+export DEPLOYER_IMAGE=$(image_for deployer)
 envsubst < config.yaml > config.yaml.rendered
 
 cat > ../manifests/managed/openshift-controller-manager-secret.yaml <<EOF 
@@ -23,7 +23,7 @@ EOF
 
 rm -f config.yaml.rendered
 
-export OPENSHIFT_CONTROLLER_MANAGER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image openshift-controller-manager)
+export OPENSHIFT_CONTROLLER_MANAGER_IMAGE=$(image_for openshift-controller-manager)
 envsubst < openshift-controller-manager-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
 
 cp openshift-controller-manager-namespace.yaml ../manifests/user
