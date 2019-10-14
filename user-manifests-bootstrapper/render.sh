@@ -2,6 +2,7 @@
 
 set -eu
 
+source ../config.sh
 source ../lib/common.sh
 
 for f in ../manifests/user/{*.yaml,*.yml}; do
@@ -19,5 +20,5 @@ data:
   kubeconfig: $(encode ../pki/service-admin.kubeconfig)
 EOF
 
-export CLI_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image cli)
+export CLI_IMAGE=$(image_for cli)
 envsubst '$CLI_IMAGE' < user-manifests-bootstrapper.yaml > ../manifests/managed/user-manifests-bootstrapper-pod.yaml

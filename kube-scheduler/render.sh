@@ -14,5 +14,5 @@ data:
   config.yaml: $(encode config.yaml)
 EOF
 
-export HYPERKUBE_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image hyperkube)
+export HYPERKUBE_IMAGE=$(image_for hyperkube)
 envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml

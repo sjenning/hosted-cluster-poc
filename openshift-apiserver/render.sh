@@ -26,7 +26,7 @@ data:
 EOF
 rm -f config.yaml.rendered
 
-export OPENSHIFT_APISERVER_IMAGE=$(${CONTAINER_CLI} run -ti --rm ${RELEASE_IMAGE} image openshift-apiserver)
+export OPENSHIFT_APISERVER_IMAGE=$(image_for openshift-apiserver)
 envsubst < openshift-apiserver-deployment.yaml > ../manifests/managed/openshift-apiserver-deployment.yaml
 envsubst < openshift-apiserver-service.yaml > ../manifests/managed/openshift-apiserver-service.yaml
 
