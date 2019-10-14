@@ -38,6 +38,9 @@ done
 if [ "${PLATFORM}" != "none" ]; then
   echo "Setting up platform resources"
   ./contrib/${PLATFORM}/setup.sh >/dev/null
+else
+  echo "No platform to setup resources"
+  exit 0
 fi
 
 echo "Applying management cluster resources"
@@ -59,7 +62,6 @@ if oc get scc &> /dev/null; then
     oc patch securitycontextconstraints.security.openshift.io/privileged --type json --patch "[{\"op\": \"add\", \"path\": \"/users/-\", \"value\": \"${svcacct}\"}]"
   fi
 fi
-
 
 echo "Waiting up to 5m for the Kubernetes API at https://${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 oc wait --for=condition=Available deployment/kube-apiserver --timeout=5m >/dev/null
