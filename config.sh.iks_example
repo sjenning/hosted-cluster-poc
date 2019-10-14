@@ -9,8 +9,8 @@ export NAMESPACE="${NAMESPACE:=hosted}"
 if ! oc get ns ${NAMESPACE} &>/dev/null; then
   oc create ns ${NAMESPACE} >/dev/null
   oc project ${NAMESPACE} >/dev/null
-  grep -v API_NODEPORT ./kube-apiserver/kube-apiserver-service.yaml | oc apply -f -
-  grep -v API_CLUSTERIP ./openshift-apiserver/openshift-apiserver-service.yaml | oc apply -f -
+  grep -v API_NODEPORT ./kube-apiserver/kube-apiserver-service.yaml | oc apply -f - >/dev/null
+  grep -v API_CLUSTERIP ./openshift-apiserver/openshift-apiserver-service.yaml | oc apply -f - >/dev/null
 fi
 
 # the name external name on which to connect to the user cluster API server
