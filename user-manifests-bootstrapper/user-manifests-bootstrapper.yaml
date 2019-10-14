@@ -38,6 +38,8 @@ spec:
       done
       export KUBECONFIG=/var/run/secrets/kubeconfig/kubeconfig
       oc apply -f $(pwd)
+      # Create the global certs configmap here because it's too large to oc apply
+      oc create configmap -n openshift-controller-manager openshift-global-ca --from-file ca-bundle.crt=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
     volumeMounts:
     - mountPath: /var/run/secrets/kubeconfig
       name: kubeconfig
