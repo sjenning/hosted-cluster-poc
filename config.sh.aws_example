@@ -8,11 +8,11 @@
 # (*configuration required)
 export PARENT_DOMAIN=example.com
 
-# none, aws, or openstack
-export PLATFORM=aws
-
 # namespace in the managed cluster in which to deploy the control plane
 export NAMESPACE=hosted
+
+# none, aws, or openstack
+export PLATFORM=aws
 
 # the base domain for the cluster
 export BASE_DOMAIN="${NAMESPACE}.${PARENT_DOMAIN}"
@@ -24,10 +24,16 @@ export EXTERNAL_API_DNS_NAME="api.${BASE_DOMAIN}"
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
 
+# the name external name on which to connect to the managed openvpn server
+export EXTERNAL_OPENVPN_DNS_NAME="vpn.${BASE_DOMAIN}"
+
 # the external port on which to connect to the user cluster API server
 # IMPACT: admin.kubeconfig server URL
 # On AWS, defaults to 6443
 export EXTERNAL_API_PORT=6443
+
+# the external port on which to connect to the managed openvpn server
+export EXTERNAL_OPENVPN_PORT=1194
 
 # the cluster IP to use for openshift-apiserver
 export API_CLUSTERIP=172.30.0.20
@@ -38,6 +44,9 @@ export RELEASE_IMAGE=$(curl -s "https://origin-release.svc.ci.openshift.org/api/
 # the external port on which to connect to the user cluster API server
 # IMPACT: admin.kubeconfig server URL
 export API_NODEPORT=31123
+
+# the external port on which to connect to the managed openvpn server
+export OPENVPN_NODEPORT=31124
 
 # Nodeport for the router's HTTP endpoint
 export ROUTER_NODEPORT_HTTP=32123
