@@ -29,13 +29,13 @@ envsubst < credentials_temp.txt > credentials.txt
 
 cat > ../manifests/managed/cos-credentials.yaml <<EOF
 apiVersion: v1
-  kind: Secret
-  metadata:
-    name: cos-credentials
-  type: Opaque
-  data:
-    config: $(encode config.txt)
-    credentials: $(encode credentials.txt)
+kind: Secret
+metadata:
+  name: cos-credentials
+type: Opaque
+data:
+  config: $(encode config.txt)
+  credentials: $(encode credentials.txt)
 EOF
 
 cp *.yaml ../manifests/managed
