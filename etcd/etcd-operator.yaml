@@ -4,29 +4,68 @@ kind: ServiceAccount
 metadata:
   name: etcd-operator
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: etcd-operator
+  labels:
+    name: etcd-operator
 spec:
-  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 2
+  replicas: 3
+  selector:
+    matchLabels:
+      name: etcd-operator
   template:
     metadata:
       labels:
         name: etcd-operator
+      annotations:
+        prometheus.io/path: '/metrics'
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
     spec:
-      serviceAccountName: etcd-operator
+      serviceAccount: etcd-operator
+      tolerations:
+        - key: "multi-az-worker"
+          operator: "Equal"
+          value: "true"
+          effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: ["etcd-operator"]
+              topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: ["etcd-operator"]
+              topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
-      - name: etcd-operator
-        image: quay.io/coreos/etcd-operator:v0.9.4
-        command:
-        - etcd-operator
-        env:
-        - name: MY_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: MY_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+        - name: etcd-operator
+          image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
+          ports:
+            - containerPort: 8080
+              name: http
+          command:
+            - etcd-operator
+            - -re-interval=60s
+          env:
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ETCD_HEALTHCHECK_IMAGE
+              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
