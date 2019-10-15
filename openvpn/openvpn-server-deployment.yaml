@@ -22,14 +22,19 @@ spec:
         command:
         - /usr/sbin/openvpn
         - --config
-        - /etc/openvpn/server.conf
-        workingDir: /etc/openvpn/
+        - /etc/openvpn/server/server.conf
+        workingDir: /etc/openvpn/server
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /etc/openvpn/
-          name: secret
+        - mountPath: /etc/openvpn/server
+          name: server
+        - mountPath: /etc/openvpn/ccd
+          name: ccd
       volumes:
       - secret:
           secretName: openvpn-server
-        name: secret
+        name: server
+      - secret:
+          secretName: openvpn-ccd
+        name: ccd

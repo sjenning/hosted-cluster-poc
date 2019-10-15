@@ -63,8 +63,8 @@ kind: Secret
 metadata:
   name: openvpn-client
 data:
-  tls.crt: $(encode ../pki/openvpn-client.pem)
-  tls.key: $(encode ../pki/openvpn-client-key.pem)
+  tls.crt: $(encode ../pki/openvpn-kube-apiserver-client.pem)
+  tls.key: $(encode ../pki/openvpn-kube-apiserver-client-key.pem)
   ca.crt: $(encode ../pki/openvpn-ca.pem)
   client.conf: $(encode client.conf.rendered)
 EOF

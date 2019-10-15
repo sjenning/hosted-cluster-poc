@@ -171,7 +171,8 @@ rm -f *.csr
 # openvpn assets
 generate_ca "openvpn-ca"
 generate_client_key_cert "openvpn-ca" "openvpn-server" "server" "kubernetes" "openvpn-server,openvpn-server.${NAMESPACE}.svc,${EXTERNAL_API_DNS_NAME}:${OPENVPN_NODEPORT}"
-generate_client_key_cert "openvpn-ca" "openvpn-client" "client" "kubernetes"
+generate_client_key_cert "openvpn-ca" "openvpn-kube-apiserver-client" "kube-apiserver" "kubernetes"
+generate_client_key_cert "openvpn-ca" "openvpn-worker-client" "worker" "kubernetes"
 if [ ! -e "openvpn-dh.pem" ]; then
   # this might be slow, lots of entropy required
   openssl dhparam -out openvpn-dh.pem 2048
