@@ -21,13 +21,13 @@ spec:
               matchExpressions:
               - key: app
                 operator: In
-                values: ["master-{{managed_cluster_tail}}"]
+                values: ["kube-apiserver"]
             topologyKey: "kubernetes.io/hostname"
           - labelSelector:
               matchExpressions:
               - key: app
                 operator: In
-                values: ["master-{{managed_cluster_tail}}"]
+                values: ["kube-apiserver"]
             topologyKey: "failure-domain.beta.kubernetes.io/zone"
       automountServiceAccountToken: false
       containers:
