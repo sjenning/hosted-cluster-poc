@@ -49,7 +49,7 @@ affinity:
                 operator: In
                 values: ["etcd-cluster"]
           topologyKey: failure-domain.beta.kubernetes.io/region
-etcdEnv:
+etcdEnv: #todo this whole section is not getting copied
   - name: ETCD_ELECTION_TIMEOUT
     value: "15000"
   - name: ETCD_HEARTBEAT_INTERVAL
