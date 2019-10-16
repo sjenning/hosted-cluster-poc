@@ -38,7 +38,7 @@ affinity:
           matchExpressions:
             - key: etcd_cluster
               operator: In
-                values: ["etcd-cluster"]
+              values: ["etcd-cluster"]
         topologyKey: "failure-domain.beta.kubernetes.io/zone"
     preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
