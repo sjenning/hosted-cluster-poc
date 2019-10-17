@@ -27,27 +27,28 @@ spec:
         effect: NoExecute
   affinity:
     podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: etcd_cluster
-              operator: In
-              values: ["etcd-cluster"]
-        topologyKey: "kubernetes.io/hostname"
-      - labelSelector:
-          matchExpressions:
-            - key: etcd_cluster
-              operator: In
-              values: ["etcd-cluster"]
-        topologyKey: "failure-domain.beta.kubernetes.io/zone"
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
             matchExpressions:
               - key: etcd_cluster
                 operator: In
                 values: ["etcd-cluster"]
-          topologyKey: failure-domain.beta.kubernetes.io/region
+          topologyKey: "kubernetes.io/hostname"
+        - labelSelector:
+            matchExpressions:
+              - key: etcd_cluster
+                operator: In
+                values: ["etcd-cluster"]
+          topologyKey: "failure-domain.beta.kubernetes.io/zone"
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: etcd_cluster
+                  operator: In
+                  values: ["etcd-cluster"]
+            topologyKey: failure-domain.beta.kubernetes.io/region
   etcdEnv:
     - name: ETCD_ELECTION_TIMEOUT
       value: "15000"
