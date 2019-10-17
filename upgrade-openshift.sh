@@ -29,6 +29,24 @@ for component in etcd kube-apiserver kube-controller-manager kube-scheduler open
   popd >/dev/null
 done
 
+echo "Scaling down management cluster CVO"
+oc scale deployment cluster-version-operator --replicas=0 --timeout=1m
+
+MGMT_KUBECONFIG="$KUBECONFIG"
+export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
+
+### BEGIN USER CLUSTER OPERATIONS ###
+
+echo "TEMPORARY: Removing user cluster CVO"
+oc delete deployment -n openshift-cluster-version cluster-version-operator
+
+echo "Running oc adm upgrade"
+oc adm upgrade --force --to-image="${RELEASE_IMAGE}"
+
+### BEGIN USER CLUSTER OPERATIONS ###
+
+export KUBECONFIG="$MGMT_KUBECONFIG"
+
 echo "Applying management cluster resources"
 oc project ${NAMESPACE} >/dev/null
 pushd manifests/managed >/dev/null
@@ -37,11 +55,5 @@ rm -f kube-controller-manager-secret.yaml
 oc apply -f . >/dev/null
 popd >/dev/null
 
-echo "Running oc adm upgrade"
-export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
-while ! oc adm upgrade --force --to-image="${RELEASE_IMAGE}"; do
-  sleep 10
-done
-
 echo "Upgrade is in progress."
-echo "Run 'oc get clusterversion' to monitor upgrade status."
+echo "Run 'oc get clusterversion' on the user cluster to monitor upgrade status."
