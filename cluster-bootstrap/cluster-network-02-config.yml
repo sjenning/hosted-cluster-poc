@@ -5,11 +5,11 @@ metadata:
   name: cluster
 spec:
   clusterNetwork:
-  - cidr: 10.128.0.0/14
+  - cidr: ${POD_NETWORK_CIDR}
     hostPrefix: 23
   externalIP:
     policy: {}
   networkType: OpenShiftSDN
   serviceNetwork:
-  - 172.31.0.0/16
+  - ${SERVICE_NETWORK_CIDR}
 status: {}

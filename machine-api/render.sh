@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 if [[ -f ./machine-user-data.ign ]]; then

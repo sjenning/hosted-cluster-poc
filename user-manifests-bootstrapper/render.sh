@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 for f in ../manifests/user/{*.yaml,*.yml}; do

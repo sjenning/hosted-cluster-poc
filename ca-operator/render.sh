@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 cat > ../manifests/managed/ca-operator-secret.yaml <<EOF 

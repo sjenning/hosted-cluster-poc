@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 CABUNDLE="$(encode ../pki/root-ca.pem)"

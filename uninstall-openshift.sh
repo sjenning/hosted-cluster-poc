@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source config.sh
+source config-defaults.sh
 
 if [ -z "$KUBECONFIG" ]; then
   echo "set KUBECONFIG to user with cluster-admin on the management cluster"

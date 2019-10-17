@@ -155,7 +155,7 @@ function remove_bucket()
 }
 
 REPODIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."
-source "${REPODIR}/config.sh"
+source "${REPODIR}/config-defaults.sh"
 
 get_infra_name INFRANAME
 get_zone_id "${PARENT_DOMAIN}" ZONE_ID
