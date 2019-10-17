@@ -22,8 +22,6 @@ metadata:
   name: ca-operator
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: ca-operator

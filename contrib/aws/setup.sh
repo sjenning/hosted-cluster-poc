@@ -47,20 +47,27 @@ function get_lb_info()
   eval $__subnet_var="'${subnet}'"
 }
 
-function get_host_machine_ip()
+function get_host_machine_info()
 {
   local infraname="${1}"
   local az="${2}"
   local __machine_ip_var="${3}"
+  local __instance_id_var="${4}"
 
   local machine=""
   local machine_ip=""
+  local instance_id=""
+  local machine_file="$(mktemp)"
 
   machine="$(oc get machines -n openshift-machine-api | grep "${infraname}-worker-${az}" | awk '{ print $1 }' | head -n1)"
-  machine_ip="$(oc get machines ${machine} -n openshift-machine-api -o json | jq -r '.status.addresses[] | select(.type == "InternalIP") | .address')"
+  oc get machines ${machine} -n openshift-machine-api -o json  > "${machine_file}"
+  machine_ip="$(cat "${machine_file}" | jq -r '.status.addresses[] | select(.type == "InternalIP") | .address')"
+  instance_id="$(cat "${machine_file}" | jq -r '.status.providerStatus.instanceId')"
+
   echo "Found management cluster machine with IP ${machine_ip} in ${az}."
 
   eval $__machine_ip_var="'${machine_ip}'"
+  eval $__instance_id_var="'${instance_id}'"
 }
 
 function get_zone_id()
@@ -205,6 +212,60 @@ function ensure_target_group()
   eval $__arn_var="'$tg_arn'"
 }
 
+function ensure_udp_target_group()
+{
+  local infraname="${1}"
+  local vpc="${2}"
+  local tg_name="${3}"
+  local port="${4}"
+  local hcport="${5}"
+  local __arn_var="${6}"
+
+  local tg_file="$(mktemp)"
+  local tg_arn=""
+
+  if ! aws elbv2 describe-target-groups --names "${tg_name}" > "${tg_file}" 2> /dev/null; then
+    tg_arn=""
+  else
+    tg_arn="$(cat "${tg_file}" | jq -r '.TargetGroups[0].TargetGroupArn')"
+    if [[ "${tg_arn}" == "null" ]]; then
+      tg_arn=""
+    fi
+    tg_port="$(cat "${tg_file}" | jq -r '.TargetGroups[0].Port')"
+    if [[ "${tg_port}" == "null" ]]; then
+      tg_port=""
+    fi
+    if [[ "${tg_port}" != "${port}" ]]; then
+      echo "Found target group ${tg_name}, but it does not point to the right port. Deleting."
+      aws elbv2 delete-target-group --target-group-arn "${tg_arn}"
+      tg_arn=""
+    fi
+  fi
+  if [[ -z "${tg_arn}" ]]; then
+    echo "Creating target group ${tg_name}"
+    aws elbv2 create-target-group --name "${tg_name}" \
+      --protocol UDP \
+      --port ${port} \
+      --vpc-id ${vpc} \
+      --health-check-protocol TCP \
+      --health-check-port "${hcport}" \
+      --health-check-enabled \
+      --health-check-interval-seconds 10 \
+      --health-check-timeout-seconds 10 \
+      --healthy-threshold-count 2 \
+      --unhealthy-threshold-count 2 \
+      --target-type instance > "${tg_file}"
+    tg_arn="$(cat "${tg_file}" | jq -r '.TargetGroups[0].TargetGroupArn')"
+    echo "Target group ${tg_name} created with ARN ${tg_arn}"
+    aws elbv2 add-tags --resource-arns "${tg_arn}" \
+      --tags "Key=kubernetes.io/cluster/${infraname},Value=owned"
+  else
+    echo "Target group ${tg_name} already exists."
+  fi
+
+  eval $__arn_var="'$tg_arn'"
+}
+
 function ensure_target()
 {
   local tg_arn="${1}"
@@ -234,6 +295,7 @@ function ensure_listener()
   local nlb_arn="${1}"
   local tg_arn="${2}"
   local port="${3}"
+  local protocol="${4:-TCP}"
   local listener_file="$(mktemp)"
   local listener_arn=""
   local listener_target=""
@@ -253,7 +315,7 @@ function ensure_listener()
   fi
   if [[ -z "${listener_arn}" ]]; then
     echo "Creating listener for load balancer ${nlb_arn}"
-    aws elbv2 create-listener --load-balancer-arn "${nlb_arn}" --protocol TCP --port ${port} \
+    aws elbv2 create-listener --load-balancer-arn "${nlb_arn}" --protocol ${protocol} --port ${port} \
       --default-actions "Type=forward,TargetGroupArn=${tg_arn}" > "${listener_file}"
     listener_arn="$(cat "${listener_file}" | jq ".Listeners[] | select(.Port==${port}) | .ListenerArn")"
     echo "Listener created with ARN ${listener_arn}"
@@ -300,10 +362,16 @@ function ensure_workers_allow_nodeport_access()
   local nodeport_rule=""
   aws ec2 describe-security-groups --filters Name=tag:Name,Values=${infraname}-worker-sg > "${sg_file}"
   sg_id="$(cat "${sg_file}" | jq -r '.SecurityGroups[0].GroupId')"
-  nodeport_rule="$(cat "${sg_file}" | jq '.SecurityGroups[0].IpPermissions[] | select(.FromPort==30000) | .IpRanges[] | select(.CidrIp == "10.0.0.0/16")')"
-  if [[ -z "${nodeport_rule}" ]]; then
-    echo "Adding worker security group rule to allow internal access to nodeports"
+  nodeport_rule="$(cat "${sg_file}" | jq '.SecurityGroups[0].IpPermissions[] | select(.FromPort==30000) | select(.IpProtocol=="tcp") | .IpRanges[] | select(.CidrIp == "10.0.0.0/16")')"
+  if [[ -z "${nodeport_rule}" || "${nodeport_rule}" == "null" ]]; then
+    echo "Adding worker security group rule to allow internal access to tcp nodeports"
     aws ec2 authorize-security-group-ingress --group-id "${sg_id}" --ip-permissions 'FromPort=30000,ToPort=32767,IpProtocol=tcp,IpRanges=[{CidrIp=10.0.0.0/16}]'
+  fi
+
+  nodeport_rule="$(cat "${sg_file}" | jq '.SecurityGroups[0].IpPermissions[] | select(.FromPort==30000) | select(.IpProtocol=="udp") | .IpRanges[] | select(.CidrIp == "0.0.0.0/0")')"
+  if [[ -z "${nodeport_rule}" || "${nodeport_rule}" == "null" ]]; then
+    echo "Adding worker security group rule to allow internal access to udp nodeports"
+    aws ec2 authorize-security-group-ingress --group-id "${sg_id}" --ip-permissions 'FromPort=30000,ToPort=32767,IpProtocol=udp,IpRanges=[{CidrIp=0.0.0.0/0}]'
   fi
 }
 
@@ -370,7 +438,7 @@ popd
 # Gather information about current management cluster
 get_infra_name INFRANAME
 get_lb_info "${INFRANAME}" AZ VPC SUBNET
-get_host_machine_ip "${INFRANAME}" "${AZ}" HOST_MACHINE_IP
+get_host_machine_info "${INFRANAME}" "${AZ}" HOST_MACHINE_IP HOST_MACHINE_ID
 get_zone_id "${PARENT_DOMAIN}" ZONE_ID
 
 # Create API load balancer
@@ -391,11 +459,21 @@ ensure_target_group "${INFRANAME}" "${VPC}" "${INFRANAME}-${NAMESPACE}-s" "${ROU
 ensure_listener "${ROUTER_NLB_ARN}" "${ROUTER_HTTPS_TG_ARN}" "443"
 ensure_cname_record "${ZONE_ID}" "*.${INGRESS_SUBDOMAIN}" "${ROUTER_NLB_DNS_NAME}"
 
-cat <<EOF > "${REPODIR}/config_api_ip.sh"
-EXTERNAL_API_IP_ADDRESS="${API_PUBLIC_IP}"
-EOF
+# Create vpn load balancer
+VPNLB="${INFRANAME}-${NAMESPACE}-vpn"
+ensure_nlb "${INFRANAME}" "${VPNLB}" "${SUBNET}" VPN_NLB_ARN VPN_NLB_DNS_NAME
+ensure_udp_target_group "${INFRANAME}" "${VPC}" "${VPNLB}" "${OPENVPN_NODEPORT}" "${API_NODEPORT}" VPN_TG_ARN
+ensure_target "${VPN_TG_ARN}" "${HOST_MACHINE_ID}"
+ensure_listener "${VPN_NLB_ARN}" "${VPN_TG_ARN}" "${EXTERNAL_OPENVPN_PORT}" UDP
+ensure_cname_record "${ZONE_ID}" "${EXTERNAL_OPENVPN_DNS_NAME}" "${VPN_NLB_DNS_NAME}"
+
+
 # Call render again on the kube-apiserver so we get the latest
 # external IP
+cat <<EOF > "${REPODIR}/config_api_ip.sh"
+export EXTERNAL_API_IP_ADDRESS="${API_PUBLIC_IP}"
+EOF
+
 pushd "${REPODIR}/kube-apiserver"
 ./render.sh
 popd

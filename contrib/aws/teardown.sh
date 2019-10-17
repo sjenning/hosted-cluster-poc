@@ -40,7 +40,7 @@ function remove_cname_record()
       aws route53 list-resource-record-sets --hosted-zone-id "${zone_id}" --starting-token "${next_token}" > "${recordsets_file}"
     fi
     value="$(cat ${recordsets_file} | jq -r ".ResourceRecordSets[] | select(.Name==\"${domain}\") | .ResourceRecords[0].Value")"
-    if [[ value=="null" ]]; then
+    if [[ "${value}" == "null" ]]; then
       value=""
     fi
     if [[ -n "${value}" ]]; then
@@ -167,9 +167,15 @@ remove_nlb "${APILB}"
 remove_target_group "${APILB}"
 remove_eip "${APILB}"
 
+VPNLB="${INFRANAME}-${NAMESPACE}-vpn"
+remove_cname_record "${ZONE_ID}" "${EXTERNAL_OPENVPN_DNS_NAME}."
+remove_nlb "${VPNLB}"
+remove_target_group "${VPNLB}"
+remove_eip "${VPNLB}"
+
 # Remove router load balancer
 ROUTERLB="${INFRANAME}-${NAMESPACE}-apps"
-remove_cname_record "${ZONE_ID}" "\\\\053.${INGRESS_SUBDOMAIN}."
+remove_cname_record "${ZONE_ID}" "\\\\052.${INGRESS_SUBDOMAIN}."
 remove_nlb "${ROUTERLB}"
 remove_target_group "${INFRANAME}-${NAMESPACE}-h"
 remove_target_group "${INFRANAME}-${NAMESPACE}-s"

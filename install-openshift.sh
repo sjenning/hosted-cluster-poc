@@ -5,9 +5,9 @@ source lib/common.sh
 
 export API_NODEPORT="${API_NODEPORT:-$EXTERNAL_API_PORT}"
 
-if [ -z "$KUBECONFIG" ]; then
-  echo "set KUBECONFIG to user with cluster-admin on the management cluster"
-  exit 1
+if ! oc get pods --request-timeout=5s &>/dev/null; then
+  echo "Unable to connect to the management cluster."
+  echo "Ensure KUBECONFIG env var is set to user with cluster-admin on the management cluster."
 fi
 
 set -eu
