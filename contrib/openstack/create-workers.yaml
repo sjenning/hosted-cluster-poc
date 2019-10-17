@@ -17,9 +17,10 @@
     os_server:
       state: present
       name: "{{ item }}"
-      image: "rhcos"
+      image: rhcos
       key_name: yubikey
-      flavor: "worker"
+      flavor: worker
+      network: external
       wait: no
       userdata: "{{ lookup('file', '../../ignition-generator/bootstrap-final.ign') | string }}"
     with_items: "{{ servers }}"
