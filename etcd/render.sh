@@ -3,7 +3,7 @@
 set -eu
 
 source ../lib/common.sh
-source ../config.sh
+source ../config-defaults.sh
 
 export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do

@@ -425,7 +425,7 @@ function generate_worker_machineset()
 }
 
 REPODIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."
-source "${REPODIR}/config.sh"
+source "${REPODIR}/config-defaults.sh"
 
 # Ensure make-pki is run first so we can create an ignition file
 # When this script is called from install-openshift.sh, this is already done

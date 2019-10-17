@@ -2,6 +2,8 @@
 
 set -eu
 
+source ../config-defaults.sh
+
 echo "copying PKI assets"
 cp ../pki/kubelet-bootstrap.kubeconfig fake-root/etc/kubernetes/kubeconfig
 # kubeconfig needs to be world readable because network-operator reads it for server URL
@@ -10,6 +12,8 @@ cp ../pki/root-ca.pem fake-root/etc/kubernetes/ca.crt
 echo "copy pull secret"
 mkdir -p fake-root/var/lib/kubelet
 cp ../pull-secret fake-root/var/lib/kubelet/config.json
+echo "render kubelet.conf"
+envsubst < ./kubelet.conf > ./fake-root/etc/kubernetes/kubelet.conf
 echo "transpiling files"
 ./filetranspile -i base.ign -f fake-root -o tmp.ign
 echo "transpiling units"

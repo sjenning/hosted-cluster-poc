@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source config.sh
+source config-defaults.sh
 
 export API_NODEPORT="${API_NODEPORT:-$EXTERNAL_API_PORT}"
 

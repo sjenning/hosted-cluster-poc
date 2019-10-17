@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 export DOCKER_BUILDER_IMAGE=$(image_for docker-builder)

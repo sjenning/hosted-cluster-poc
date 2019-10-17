@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 source ../lib/common.sh
 
 export OAUTH_ROUTE="oauth-openshift.${INGRESS_SUBDOMAIN}"

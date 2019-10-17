@@ -4,7 +4,7 @@ set -e
 
 REPODIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."
 
-source "${REPODIR}/config.sh"
+source "${REPODIR}/config-defaults.sh"
 
 pushd ${REPODIR}/ignition-generator
 ./make-ignition.sh
