@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: etcd-operator
+  name: etcd-restore-operator
   labels:
-    name: etcd-operator
+    name: etcd-restore-operator
 spec:
   strategy:
     type: RollingUpdate
@@ -12,15 +12,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      name: etcd-operator
+      name: etcd-restore-operator
   template:
     metadata:
       labels:
-        name: etcd-operator
-      annotations:
-        prometheus.io/path: '/metrics'
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '8080'
+        name: etcd-restore-operator
     spec:
       serviceAccount: etcd-operator
       tolerations:
@@ -35,23 +31,19 @@ spec:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: ["etcd-operator"]
+                    values: ["etcd-restore-operator"]
               topologyKey: "kubernetes.io/hostname"
             - labelSelector:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: ["etcd-operator"]
+                    values: ["etcd-restore-operator"]
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
-        - name: etcd-operator
+        - name: etcd-restore-operator
           image: registry.ng.bluemix.net/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
-          ports:
-            - containerPort: 8080
-              name: http
           command:
-            - etcd-operator
-            - -re-interval=60s
+            - etcd-restore-operator
           env:
             - name: MY_POD_NAMESPACE
               valueFrom:
@@ -61,5 +53,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: CUSTOM_CURL_IMAGE
+              value: registry.ng.bluemix.net/armada-master/etcd-operator-curl:02cc01028522064335bcdeca582f81da6ae102fb
             - name: ETCD_HEALTHCHECK_IMAGE
               value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:02cc01028522064335bcdeca582f81da6ae102fb
