@@ -83,6 +83,6 @@ spec:
   TLS:
     static:
       member:
-        peerSecret: etcd-cluster-peer-tls
-        serverSecret: etcd-cluster-server-tls
-      operatorSecret: etcd-cluster-client-tls
+        peerSecret: etcd-peer-tls
+        serverSecret: etcd-server-tls
+      operatorSecret: etcd-client-tls
