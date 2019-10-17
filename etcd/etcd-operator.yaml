@@ -36,7 +36,7 @@ spec:
           effect: NoSchedule
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
+          preferredDuringSchedulingIgnoredDuringExecution: # todo requiredDuringSchedulingIgnoredDuringExecution: for multi az
             - labelSelector:
                 matchExpressions:
                   - key: name
@@ -51,7 +51,7 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-operator
-          image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
+          image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb
           ports:
             - containerPort: 8080
               name: http
@@ -68,4 +68,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: ETCD_HEALTHCHECK_IMAGE
-              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
+              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:484c88ac69ba493e025315a9e5b8544fef7463bb
