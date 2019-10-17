@@ -36,21 +36,19 @@ spec:
           effect: NoSchedule
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-              - labelSelector:
-                  matchExpressions:
-                    - key: name
-                      operator: In
-                      values: ["etcd-operator"]
-                topologyKey: "kubernetes.io/hostname"
-              - labelSelector:
-                  matchExpressions:
-                    - key: name
-                      operator: In
-                      values: ["etcd-operator"]
-                topologyKey: "failure-domain.beta.kubernetes.io/zone"
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: ["etcd-operator"]
+              topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values: ["etcd-operator"]
+              topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-operator
           image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
