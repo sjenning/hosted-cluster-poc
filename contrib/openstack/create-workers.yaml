@@ -13,13 +13,6 @@
       name: "{{ item }}"
       wait: no
     with_items: "{{ servers }}"
-#  - name: create ports with port security disabled
-#    os_port:
-#      state: present
-#      name: "{{ item }}"
-#      port_security_enabled: no
-#      network: external
-#    with_items: "{{ servers }}"
   - name: create workers instances
     os_server:
       state: present
@@ -27,8 +20,6 @@
       image: "rhcos"
       key_name: yubikey
       flavor: "worker"
-      nics:
-      - port-name: "{{ item }}"
       wait: no
       userdata: "{{ lookup('file', '../../ignition-generator/bootstrap-final.ign') | string }}"
     with_items: "{{ servers }}"
