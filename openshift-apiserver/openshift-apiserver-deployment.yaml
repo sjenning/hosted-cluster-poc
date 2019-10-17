@@ -4,8 +4,6 @@ metadata:
   name: openshift-apiserver
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: openshift-apiserver
