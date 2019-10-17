@@ -36,22 +36,24 @@ spec:
           effect: NoSchedule
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution: # todo requiredDuringSchedulingIgnoredDuringExecution: for multi az
-            - labelSelector:
-                matchExpressions:
-                  - key: name
-                    operator: In
-                    values: ["etcd-operator"]
-              topologyKey: "kubernetes.io/hostname"
-            - labelSelector:
-                matchExpressions:
-                  - key: name
-                    operator: In
-                    values: ["etcd-operator"]
-              topologyKey: "failure-domain.beta.kubernetes.io/zone"
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+              - labelSelector:
+                  matchExpressions:
+                    - key: name
+                      operator: In
+                      values: ["etcd-operator"]
+                topologyKey: "kubernetes.io/hostname"
+              - labelSelector:
+                  matchExpressions:
+                    - key: name
+                      operator: In
+                      values: ["etcd-operator"]
+                topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-operator
-          image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb
+          image: registry.ng.bluemix.net/armada-master/etcd-operator:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
           ports:
             - containerPort: 8080
               name: http
@@ -68,4 +70,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: ETCD_HEALTHCHECK_IMAGE
-              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:484c88ac69ba493e025315a9e5b8544fef7463bb
+              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:484c88ac69ba493e025315a9e5b8544fef7463bb # todo - figure out how to pull dynamically
