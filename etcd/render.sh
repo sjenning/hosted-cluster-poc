@@ -41,3 +41,6 @@ EOF
 
 cp *.yaml ../manifests/managed
 envsubst < etcd-operator-cluster-role-binding.yaml > ../manifests/managed/etcd-operator-cluster-role-binding.yaml
+envsubst < etcd-cluster.yaml > ../manifests/managed/etcd-cluster.yaml
+envsubst < etcd-cronjob.yaml > ../manifests/managed/etcd-cronjob.yaml
+envsubst < etcd-nodeport-service.yaml > ../manifests/managed/etcd-nodeport-service.yaml
