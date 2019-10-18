@@ -17,7 +17,7 @@ spec:
               effect: "NoSchedule"
           containers:
             - name: kubx-etcd-backup
-              image: {{ cronjob_etcd_backup }}
+              image: registry.ng.bluemix.net/armada-master/armada-etcd-recovery-backup:7159cc48d43e507d617c95029213df3ab9cde237
               env:
                 - name: COS_CREDENTIALS
                   valueFrom:
@@ -30,7 +30,7 @@ spec:
                       name: cos-credentials
                       key: config
                 - name: CLUSTER_ID
-                  value: "hosted"
+                  value: "${CLUSTER_ID}"
                 - name: ETCDCTL_API
                   value: "2"
                 - name: ETCDTOOL_PEERS
