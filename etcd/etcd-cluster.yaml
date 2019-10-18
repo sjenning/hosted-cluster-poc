@@ -1,9 +1,9 @@
 apiVersion: etcd.database.coreos.com/v1beta2
 kind: EtcdCluster
 metadata:
-  name: etcd
+  name: etcd-${CLUSTER_ID}
   labels:
-    clusterID: "etcd"
+    clusterID: "${CLUSTER_ID}"
 spec:
   size: 3
   version: 3.3.13
@@ -17,7 +17,7 @@ spec:
         effect: "NoSchedule"
       - key: dedicated
         operator: Equal
-        value: master-hosted
+        value: master-${CLUSTER_ID}
         effect: NoSchedule
       - key: node.kubernetes.io/not-ready
         operator: Exists
@@ -32,13 +32,13 @@ spec:
               matchExpressions:
                 - key: etcd_cluster
                   operator: In
-                  values: ["etcd"]
+                  values: ["etcd-${CLUSTER_ID}"]
             topologyKey: "kubernetes.io/hostname"
           - labelSelector:
               matchExpressions:
                 - key: etcd_cluster
                   operator: In
-                  values: ["etcd"]
+                  values: ["etcd-${CLUSTER_ID}"]
             topologyKey: "failure-domain.beta.kubernetes.io/zone"
         preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
@@ -47,7 +47,7 @@ spec:
                 matchExpressions:
                   - key: etcd_cluster
                     operator: In
-                    values: ["etcd"]
+                    values: ["etcd-${CLUSTER_ID}"]
               topologyKey: failure-domain.beta.kubernetes.io/region
     etcdEnv:
       - name: ETCD_ELECTION_TIMEOUT
@@ -83,6 +83,6 @@ spec:
   TLS:
     static:
       member:
-        peerSecret: etcd-peer-tls
-        serverSecret: etcd-server-tls
-      operatorSecret: etcd-client-tls
+        peerSecret: etcd-${CLUSTER_ID}-peer-tls
+        serverSecret: etcd-${CLUSTER_ID}-server-tls
+      operatorSecret: etcd-${CLUSTER_ID}-client-tls

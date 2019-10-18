@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: etcd-client-service-np
+  name: etcd-${CLUSTER_ID}-client-service-np
 spec:
   ports:
     - name: client
@@ -9,6 +9,5 @@ spec:
       protocol: TCP
       targetPort: 2379
   selector:
-    etcd_cluster: etcd
-    app: etcd
+    etcd_cluster: etcd-${CLUSTER_ID}
   type: NodePort

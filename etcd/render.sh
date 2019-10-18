@@ -7,9 +7,10 @@ source ../config.sh
 
 export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
-    file=${secret}
-    if [ "${file}" != "etcd-client" ]; then
-        file="etcd-${secret}"
+    if [ "${file}" == "etcd-client" ]; then
+        file="etcd-${cluster_id}-client"
+    else
+        file="etcd-"${cluster_id}-${secret}
     fi
 
     cat > ../manifests/managed/${file}-tls-secret.yaml <<EOF
