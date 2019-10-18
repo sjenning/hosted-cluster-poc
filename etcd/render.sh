@@ -19,8 +19,8 @@ apiVersion: v1
 metadata:
   name: ${file}-tls
 data:
-  ${secret}.crt: $(encode ../pki/${secret}.pem)
-  ${secret}.key: $(encode ../pki/${secret}-key.pem)
+  ${secret}.crt: $(encode ../pki/${file}.pem)
+  ${secret}.key: $(encode ../pki/${file}-key.pem)
   ${secret}-ca.crt: ${CA}
 EOF
 done
