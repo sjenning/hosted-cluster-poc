@@ -38,6 +38,8 @@ spec:
           - "--enable-default-cluster-version=true"
           - "--kubeconfig=/etc/kubernetes/kubeconfig"
           - "--v=4"
+          - '--exclude-manifests=.*_cluster-version-operator_.*deployment.*'
+          - '--exclude-manifests=.*_cluster-version-operator_.*service.*'
           - "--exclude-manifests=.*_kube-apiserver-operator_.*"
           - "--exclude-manifests=.*_kube-controller-manager-operator_.*"
           - "--exclude-manifests=.*_kube-scheduler-operator_.*"
