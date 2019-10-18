@@ -154,9 +154,9 @@ generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserv
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
 # etcd
-generate_client_key_cert "root-ca" "etcd-${CLUSTER_ID}-client" "etcd-client" "kubernetes"
-generate_client_key_cert "root-ca" "etcd-${CLUSTER_ID}-server" "etcd-server" "kubernetes" "*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc,etcd-${CLUSTER_ID}-client.${NAMESPACE}.svc,etcd,etcd-${CLUSTER_ID}-client,localhost"
-generate_client_key_cert "root-ca" "etcd-${CLUSTER_ID}-peer" "etcd-peer" "kubernetes" "*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc,*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "etcd-client" "etcd-client" "kubernetes"
+generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc,etcd-${CLUSTER_ID}-client.${NAMESPACE}.svc,etcd,etcd-${CLUSTER_ID}-client,localhost"
+generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc,*.etcd-${CLUSTER_ID}.${NAMESPACE}.svc.cluster.local"
 
 # openshift-apiserver
 generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift-apiserver" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift-apiserver.default.svc.cluster.local"

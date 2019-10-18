@@ -9,8 +9,10 @@ export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
     if [ "${secret}" == "etcd-client" ]; then
         file="etcd-${CLUSTER_ID}-client"
+        pki_path=${secret}
     else
         file="etcd-"${CLUSTER_ID}-${secret}
+        pki_path="etcd-"${secret}
     fi
 
     cat > ../manifests/managed/${file}-tls-secret.yaml <<EOF
@@ -19,8 +21,8 @@ apiVersion: v1
 metadata:
   name: ${file}-tls
 data:
-  ${secret}.crt: $(encode ../pki/${file}.pem)
-  ${secret}.key: $(encode ../pki/${file}-key.pem)
+  ${secret}.crt: $(encode ../pki/${pki_path}.pem)
+  ${secret}.key: $(encode ../pki/${pki_path}-key.pem)
   ${secret}-ca.crt: ${CA}
 EOF
 done
