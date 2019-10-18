@@ -7,7 +7,7 @@ source ../config.sh
 
 export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
-    if [ "${file}" == "etcd-client" ]; then
+    if [ "${secret}" == "etcd-client" ]; then
         file="etcd-${cluster_id}-client"
     else
         file="etcd-"${cluster_id}-${secret}
