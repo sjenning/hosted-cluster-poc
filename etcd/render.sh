@@ -7,9 +7,12 @@ source ../config.sh
 
 export CA=$(encode ../pki/root-ca.pem)
 for secret in etcd-client server peer; do
-    file=${secret}
-    if [ "${file}" != "etcd-client" ]; then
-        file="etcd-${secret}"
+    if [ "${secret}" == "etcd-client" ]; then
+        file="etcd-${CLUSTER_ID}-client"
+        pki_path=${secret}
+    else
+        file="etcd-"${CLUSTER_ID}-${secret}
+        pki_path="etcd-"${secret}
     fi
 
     cat > ../manifests/managed/${file}-tls-secret.yaml <<EOF
@@ -18,8 +21,8 @@ apiVersion: v1
 metadata:
   name: ${file}-tls
 data:
-  ${secret}.crt: $(encode ../pki/${file}.pem)
-  ${secret}.key: $(encode ../pki/${file}-key.pem)
+  ${secret}.crt: $(encode ../pki/${pki_path}.pem)
+  ${secret}.key: $(encode ../pki/${pki_path}-key.pem)
   ${secret}-ca.crt: ${CA}
 EOF
 done
@@ -39,4 +42,8 @@ data:
 EOF
 
 cp *.yaml ../manifests/managed
-envsubst < etcd-operator-cluster-role-binding.yaml > ../manifests/managed/etcd-operator-cluster-role-binding.yaml
+envsubst < etcd-cluster.yaml > ../manifests/managed/etcd-cluster.yaml
+envsubst < etcd-cronjob.yaml > ../manifests/managed/etcd-cronjob.yaml
+envsubst < etcd-nodeport-service.yaml > ../manifests/managed/etcd-nodeport-service.yaml
+envsubst < etcd-operator-crd-creation-role-binding.yaml > ../manifests/managed/etcd-operator-crd-creation-role-binding.yaml
+envsubst < etcd-operator-psp-cluster-role-binding.yaml > ../manifests/managed/etcd-operator-psp-cluster-role-binding.yaml
