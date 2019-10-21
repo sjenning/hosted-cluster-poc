@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source config.sh
+source config-defaults.sh
 
 export API_NODEPORT="${API_NODEPORT:-$EXTERNAL_API_PORT}"
 
@@ -9,7 +9,7 @@ if [ -z "$KUBECONFIG" ]; then
   exit 1
 fi
 
-if ! oc get ns ${NAMESPACE} &>/dev/null; then
+if ! oc project ${NAMESPACE} &>/dev/null; then
   echo "namespace '${NAMESPACE}' not found in the management cluster"
   exit 1
 fi

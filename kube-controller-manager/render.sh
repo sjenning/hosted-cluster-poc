@@ -2,6 +2,7 @@
 
 set -eu
 
+source ../config-defaults.sh
 source ../lib/common.sh
 
 cat > ../manifests/managed/kube-controller-manager-secret.yaml <<EOF 
@@ -13,7 +14,7 @@ data:
   kubeconfig: $(encode ../pki/kube-controller-manager.kubeconfig)
   ca.crt: $(encode ../pki/combined-ca.pem)
   service-account: $(encode ../pki/service-account-key.pem)
-  config.yaml: $(encode config.yaml)
+  config.yaml: $(cat config.yaml | envsubst | encode -)
   cluster-signer.crt: $(encode ../pki/cluster-signer.pem)
   cluster-signer.key: $(encode ../pki/cluster-signer-key.pem)
 EOF
