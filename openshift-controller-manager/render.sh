@@ -30,7 +30,6 @@ if [[ "$DEPLOY_HA" == "true" ]]; then
 else
   envsubst < openshift-controller-manager-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
 fi
-envsubst < openshift-controller-manager-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
 
 cp openshift-controller-manager-namespace.yaml ../manifests/user/00-openshift-controller-manager-namespace.yaml
 cat > ../manifests/user/openshift-controller-manager-service-ca.yaml <<EOF

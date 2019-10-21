@@ -20,4 +20,3 @@ if [[ "$DEPLOY_HA" == "true" ]]; then
 else
   envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml
 fi
-envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml

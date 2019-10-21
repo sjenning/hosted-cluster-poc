@@ -25,4 +25,3 @@ if [[ "$DEPLOY_HA" == "true" ]]; then
 else
   envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
 fi
-envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml

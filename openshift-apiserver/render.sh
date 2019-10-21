@@ -51,11 +51,12 @@ spec:
   versionPriority: 15
 EOF
 done
+for i in openshift-apiserver-user-*.yaml ; do
+  envsubst < $i > ../manifests/user/$i
+done
 export HYPERKUBE_IMAGE=$(image_for hyperkube)
 if [[ "$DEPLOY_HA" == "true" ]]; then
   envsubst < openshift-apiserver-ha-deployment.yaml > ..../manifests/user/openshift-apiserver-deployment.yaml
 else
   envsubst < openshift-apiserver-deployment.yaml > ..../manifests/user/openshift-apiserver-deployment.yaml
 fi
-envsubst < openshift-apiserver-deployment.yaml > ..../manifests/user/openshift-apiserver-deployment.yaml
-
