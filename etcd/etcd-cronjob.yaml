@@ -17,7 +17,7 @@ spec:
               effect: "NoSchedule"
           containers:
             - name: kubx-etcd-backup
-              image: registry.ng.bluemix.net/armada-master/armada-etcd-recovery-backup:7159cc48d43e507d617c95029213df3ab9cde237
+              image: ${ETCD_OPERATOR_BACKUP_IMAGE}
               env:
                 - name: COS_CREDENTIALS
                   valueFrom:

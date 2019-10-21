@@ -45,7 +45,7 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-operator
-          image: registry.ng.bluemix.net/armada-master/${ETCD_OPERATOR_IMAGE}
+          image: ${ETCD_OPERATOR_IMAGE}
           ports:
             - containerPort: 8080
               name: http
