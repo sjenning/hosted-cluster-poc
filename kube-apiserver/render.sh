@@ -76,4 +76,4 @@ if [[ "$DEPLOY_HA" == "true" ]]; then
 else
   envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
 fi
-
+envsubst < kube-apiserver-service.yaml > ../manifests/managed/kube-apiserver-service.yaml
