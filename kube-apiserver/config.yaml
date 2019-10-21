@@ -15,8 +15,8 @@ admission:
         apiVersion: network.openshift.io/v1
         kind: RestrictedEndpointsAdmissionConfig
         restrictedCIDRs:
-        - 10.128.0.0/14
-        - 172.31.0.0/16
+        - ${POD_NETWORK_CIDR}
+        - ${SERVICE_NETWORK_CIDR}
 aggregatorConfig:
   proxyClientInfo:
     certFile: "/etc/kubernetes/proxy-client.crt"
@@ -106,7 +106,7 @@ projectConfig:
 serviceAccountPublicKeyFiles:
 - "/etc/kubernetes/service-account.pub"
 servicesNodePortRange: 30000-32767
-servicesSubnet: 172.31.0.0/16
+servicesSubnet: ${SERVICE_NETWORK_CIDR}
 servingInfo:
   bindAddress: 0.0.0.0:6443
   bindNetwork: tcp4

@@ -10,7 +10,7 @@ extendedArguments:
   cert-dir:
   - "/var/run/kubernetes"
   cluster-cidr:
-  - 10.128.0.0/14
+  - ${POD_NETWORK_CIDR}
   cluster-signing-cert-file:
   - "/etc/kubernetes/cluster-signer.crt"
   cluster-signing-key-file:
@@ -52,7 +52,7 @@ extendedArguments:
   service-account-private-key-file:
   - "/etc/kubernetes/service-account"
   service-cluster-ip-range:
-  - 172.31.0.0/16
+  - ${SERVICE_NETWORK_CIDR}
   use-service-account-credentials:
   - 'true'
 serviceServingCert:

@@ -2,7 +2,7 @@
 
 set -eu
 
-source ../config.sh
+source ../config-defaults.sh
 
 cp *.yaml *.yml ../manifests/user
 
