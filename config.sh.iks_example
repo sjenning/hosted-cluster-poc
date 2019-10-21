@@ -36,3 +36,9 @@ export BASE_DOMAIN=example.com
 
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
+
+export REGISTRY_URL=registry.ng.bluemix.net
+export ETCD_OPERATOR_IMAGE=$REGISTRY_URL/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
+export BUSY_BOX_IMAGE=$REGISTRY_URL/armada-master/busybox:1.28.4-glibc
+export ETCD_HEALTH_CHECK_IMAGE=$REGISTRY_URL/armada-master/etcd-healthchecker:02cc01028522064335bcdeca582f81da6ae102fb
+export CUSTOM_CURL_IMAGE=$REGISTRY_URL/armada-master/etcd-operator-curl:02cc01028522064335bcdeca582f81da6ae102fb
