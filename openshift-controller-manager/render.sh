@@ -25,6 +25,11 @@ EOF
 rm -f config.yaml.rendered
 
 export OPENSHIFT_CONTROLLER_MANAGER_IMAGE=$(image_for openshift-controller-manager)
+if [[ "$DEPLOY_HA" == "true" ]]; then
+  envsubst < openshift-controller-manager-ha-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
+else
+  envsubst < openshift-controller-manager-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
+fi
 envsubst < openshift-controller-manager-deployment.yaml > ../manifests/managed/openshift-controller-manager-deployment.yaml
 
 cp openshift-controller-manager-namespace.yaml ../manifests/user/00-openshift-controller-manager-namespace.yaml

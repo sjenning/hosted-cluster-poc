@@ -71,5 +71,9 @@ EOF
 rm -f client.conf.rendered
 
 export HYPERKUBE_IMAGE=$(image_for hyperkube)
-envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
+if [[ "$DEPLOY_HA" == "true" ]]; then
+  envsubst < kube-apiserver-ha-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
+else
+  envsubst < kube-apiserver-deployment.yaml > ../manifests/managed/kube-apiserver-deployment.yaml
+fi
 envsubst < kube-apiserver-service.yaml > ../manifests/managed/kube-apiserver-service.yaml
