@@ -37,6 +37,10 @@ export BASE_DOMAIN=example.com
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
 
+# cluster id
+export CLUSTER_ID=cluster_id
+
+# Used for etcd config
 export REGION=us-standard
 export BACKUPS_BUCKET=dev-south-iks-etcd-backups
 export BACKUPS_ENDPOINT=https://s3.us-south.objectstorage.softlayer.net
