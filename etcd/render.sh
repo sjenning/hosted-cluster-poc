@@ -47,6 +47,5 @@ envsubst < etcd-backup-operator.yaml > ../manifests/managed/etcd-backup-operator
 envsubst < etcd-restore-operator.yaml > ../manifests/managed/etcd-restore-operator.yaml
 envsubst < etcd-operator.yaml > ../manifests/managed/etcd-operator.yaml
 envsubst < etcd-cronjob.yaml > ../manifests/managed/etcd-cronjob.yaml
-envsubst < etcd-nodeport-service.yaml > ../manifests/managed/etcd-nodeport-service.yaml
 envsubst < etcd-operator-crd-creation-role-binding.yaml > ../manifests/managed/etcd-operator-crd-creation-role-binding.yaml
 envsubst < etcd-operator-psp-cluster-role-binding.yaml > ../manifests/managed/etcd-operator-psp-cluster-role-binding.yaml
