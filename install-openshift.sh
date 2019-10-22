@@ -53,6 +53,11 @@ oc secrets link default pull-secret --for=pull >/dev/null
 rm -f pull-secret.yaml
 oc apply -f . >/dev/null
 popd >/dev/null
+if [ "$DEPLOY_HA" == "true" ]; then
+  for component in kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver openshift-controller-manager; do
+    oc scale deployment ${component} --replicas=3
+  done
+fi
 
 # Allow privileged pods for this namespace
 # TODO: Investigate whether we can run without privileged
