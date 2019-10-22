@@ -41,7 +41,7 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-restore-operator
-          image: registry.ng.bluemix.net/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
+          image: ${ETCD_OPERATOR_IMAGE}
           command:
             - etcd-restore-operator
           env:
@@ -54,6 +54,6 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: CUSTOM_CURL_IMAGE
-              value: registry.ng.bluemix.net/armada-master/etcd-operator-curl:02cc01028522064335bcdeca582f81da6ae102fb
+              value: ${CUSTOM_CURL_IMAGE}
             - name: ETCD_HEALTHCHECK_IMAGE
-              value: registry.ng.bluemix.net/armada-master/etcd-healthchecker:02cc01028522064335bcdeca582f81da6ae102fb
+              value: ${ETCD_HEALTH_CHECK_IMAGE}

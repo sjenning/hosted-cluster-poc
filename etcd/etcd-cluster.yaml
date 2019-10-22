@@ -7,9 +7,9 @@ metadata:
 spec:
   size: 3
   version: 3.3.13
-  repository: "registry.ng.bluemix.net/armada-master/etcd"
+  repository: "${ETCD_IMAGE}"
   pod:
-    busyboxImage: registry.ng.bluemix.net/armada-master/busybox:1.28.4-glibc
+    busyboxImage: ${BUSY_BOX_IMAGE}
     tolerations:
       - key: "multi-az-worker"
         operator: "Equal"

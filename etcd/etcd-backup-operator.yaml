@@ -41,7 +41,7 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
         - name: etcd-backup-operator
-          image: registry.ng.bluemix.net/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
+          image: ${ETCD_OPERATOR_IMAGE}
           command:
             - etcd-backup-operator
           env:
