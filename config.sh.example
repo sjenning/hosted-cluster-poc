@@ -40,8 +40,19 @@ export API_NODEPORT=31123
 # the external port on which to connect to the managed openvpn server
 export OPENVPN_NODEPORT=31124
 
-export REGISTRY_URL=registry.ng.bluemix.net
-export ETCD_OPERATOR_IMAGE=$REGISTRY_URL/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
-export BUSY_BOX_IMAGE=$REGISTRY_URL/armada-master/busybox:1.28.4-glibc
-export ETCD_HEALTH_CHECK_IMAGE=$REGISTRY_URL/armada-master/etcd-healthchecker:02cc01028522064335bcdeca582f81da6ae102fb
-export CUSTOM_CURL_IMAGE=$REGISTRY_URL/armada-master/etcd-operator-curl:02cc01028522064335bcdeca582f81da6ae102fb
+# cluster id
+export CLUSTER_ID=cluster_id
+
+# Used for etcd config
+export REGION=us-standard
+export BACKUPS_BUCKET=dev-south-iks-etcd-backups
+export BACKUPS_ENDPOINT=https://s3.us-south.objectstorage.softlayer.net
+export ACCESS_KEY=access_key
+export SECRET_ACCESS_KEY=secret_access_key
+export REGISTRY_URL=bootstrap1234
+export ETCD_OPERATOR_IMAGE=$REGISTRY_URL/etcd-operator:1
+export BUSY_BOX_IMAGE=$REGISTRY_URL/busybox:1.28.4-glibc
+export ETCD_HEALTH_CHECK_IMAGE=$REGISTRY_URL/etcd-healthchecker:1
+export CUSTOM_CURL_IMAGE=$REGISTRY_URL/etcd-operator-curl:1
+export ETCD_OPERATOR_BACKUP_IMAGE=$REGISTRY_URL/armada-etcd-recovery-backup:1
+export ETCD_IMAGE=$REGISTRY_URL/etcd
