@@ -37,6 +37,15 @@ export BASE_DOMAIN=example.com
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
 
+# cluster id
+export CLUSTER_ID=cluster_id
+
+# Used for etcd config
+export REGION=us-standard
+export BACKUPS_BUCKET=dev-south-iks-etcd-backups
+export BACKUPS_ENDPOINT=https://s3.us-south.objectstorage.softlayer.net
+export ACCESS_KEY=access_key
+export SECRET_ACCESS_KEY=secret_access_key
 export REGISTRY_URL=registry.ng.bluemix.net
 export ETCD_OPERATOR_IMAGE=$REGISTRY_URL/armada-master/etcd-operator:02cc01028522064335bcdeca582f81da6ae102fb
 export BUSY_BOX_IMAGE=$REGISTRY_URL/armada-master/busybox:1.28.4-glibc
