@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: kubx-etcd-backup-${CLUSTER_ID}
 spec:
-  schedule: "24 10 * * *"
+  schedule: "0 */8 * * *"
   jobTemplate:
     spec:
       backoffLimit: 6
