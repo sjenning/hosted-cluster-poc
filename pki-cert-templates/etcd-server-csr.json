@@ -1,0 +1,22 @@
+{
+	"CN": "${user}",
+	"hosts": [
+		"localhost",
+		"*.etcd.${NAMESPACE}.svc",
+		"etcd-client.${NAMESPACE}.svc",
+		"etcd",
+		"etcd-client"
+	],
+	"key": {
+		"algo": "rsa",
+		"size": 2048
+	},
+	"names": [
+		{
+			"C": "US",
+			"L": "CA",
+			"ST": "San Francisco",
+			"O": "${org}"
+		}
+	]
+}
