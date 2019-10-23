@@ -4,24 +4,7 @@
       "expiry": "19800h"
     },
     "profiles": {
-      "server": {
-        "expiry": "19800h",
-        "usages": [
-          "signing",
-          "key encipherment",
-          "server auth",
-          "client auth"
-        ]
-      },
-      "client": {
-        "expiry": "19800h",
-        "usages": [
-          "signing",
-          "key encipherment",
-          "client auth"
-        ]
-      },
-      "peer": {
+      "kubernetes": {
         "expiry": "19800h",
         "usages": [
           "signing",

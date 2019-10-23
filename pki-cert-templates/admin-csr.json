@@ -1,9 +1,7 @@
 {
   "CN": "${user}",
   "hosts": [
-    "openvpn-server",
-    "openvpn-server.${NAMESPACE}.svc",
-    "${EXTERNAL_API_DNS_NAME}:${OPENVPN_NODEPORT}"
+    "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
   ],
   "key": {
     "algo": "rsa",

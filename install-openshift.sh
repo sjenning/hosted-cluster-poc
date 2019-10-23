@@ -15,7 +15,7 @@ set -eu
 # make-pki.sh does not remove the /pki directory and does not regenerate certs that already exist.
 # If you wish to regenerate the PKI, remove the /pki directory.
 echo "Creating PKI assets"
-./make-pki.sh &>/dev/null
+./make-pki.sh
 
 echo "Retrieving release pull specs"
 export RELEASE_PULLSPECS="$(mktemp)"
@@ -35,13 +35,13 @@ for component in etcd kube-apiserver kube-controller-manager kube-scheduler clus
   popd >/dev/null
 done
 
-if [ "${PLATFORM}" != "none" ]; then
-  echo "Setting up platform resources"
-  ./contrib/${PLATFORM}/setup.sh >/dev/null
-else
-  echo "No platform to setup resources"
-  exit 0
-fi
+#if [ "${PLATFORM}" != "none" ]; then
+#  echo "Setting up platform resources"
+#  ./contrib/${PLATFORM}/setup.sh >/dev/null
+#else
+#  echo "No platform to setup resources"
+#  exit 0
+#fi
 
 echo "Applying management cluster resources"
 # use `create ns` instead of `new-project` in case management cluster in not OCP

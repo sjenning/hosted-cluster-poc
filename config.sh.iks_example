@@ -36,3 +36,8 @@ export BASE_DOMAIN=example.com
 
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
+export EXTERNAL_PRIVATE_API_DNS_NAME="${EXTERNAL_PRIVATE_API_DNS_NAME}:=''" # todo ha_private_managed_master_hostname
+export EXTERNAL_API_DNS_NAME_EXTERNAL="${EXTERNAL_API_DNS_NAME_EXTERNAL}:=''" # todo ha_public_external_managed_master_hostname
+export EXTERNAL_PRIVATE_API_DNS_NAME_EXTERNAL="${EXTERNAL_PRIVATE_API_DNS_NAME_EXTERNAL}:=''" # todo ha_private_external_managed_master_hostname
+export EXTERNAL_API_DNS_NAME_ENDPOINTS="${EXTERNAL_API_DNS_NAME_ENDPOINTS}:=''" # todo ha_master_public_endpoint
+export EXTERNAL_PRIVATE_API_DNS_NAME_ENDPOINTS="${EXTERNAL_PRIVATE_API_DNS_NAME_ENDPOINTS}:=''" # todo ha_master_private_endpoint

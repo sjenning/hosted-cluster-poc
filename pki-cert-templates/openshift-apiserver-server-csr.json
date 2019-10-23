@@ -5,7 +5,7 @@
     "openshift-apiserver.${NAMESPACE}.svc",
     "openshift-controller-manager.${NAMESPACE}.svc.cluster.local",
     "openshift-apiserver.default.svc",
-    "openshift-apiserver.default.svc.cluster.local" // todo: do we need to sign the openshift apiserver with the public endpoints?
+    "openshift-apiserver.default.svc.cluster.local"
   ],
   "key": {
     "algo": "rsa",

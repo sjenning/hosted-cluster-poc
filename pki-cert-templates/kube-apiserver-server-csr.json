@@ -8,11 +8,11 @@
 		"kube-apiserver.${NAMESPACE}.svc",
 		"kube-apiserver.${NAMESPACE}.svc.cluster.local",
 		"${EXTERNAL_API_DNS_NAME}",
-		"${EXTERNAL_PRIVATE_API_DNS_NAME}", // todo ha_private_managed_master_hostname
-		"${EXTERNAL_API_DNS_NAME_EXTERNAL}", // todo ha_public_external_managed_master_hostname
-		"${EXTERNAL_PRIVATE_API_DNS_NAME_EXTERNAL", // todo ha_private_external_managed_master_hostname
-		"${EXTERNAL_API_DNS_NAME_ENDPOINTS}", // todo ha_master_public_endpoint
-		"${EXTERNAL_PRIVATE_API_DNS_NAME_ENDPOINTS}", // todo ha_master_private_endpoint
+		"${EXTERNAL_PRIVATE_API_DNS_NAME}",
+		"${EXTERNAL_API_DNS_NAME_EXTERNAL}",
+		"${EXTERNAL_PRIVATE_API_DNS_NAME_EXTERNAL}",
+		"${EXTERNAL_API_DNS_NAME_ENDPOINTS}",
+		"${EXTERNAL_PRIVATE_API_DNS_NAME_ENDPOINTS}",
 		"${EXTERNAL_API_IP_ADDRESS}",
 		"${SERVICE_NETWORK_PREFIX}.0.1"
 	],

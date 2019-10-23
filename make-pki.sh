@@ -1,22 +1,25 @@
 #/bin/bash
 
-set -e
+set -ex
 
 source config-defaults.sh
 
 mkdir -p pki
 cd pki
+cp ../pki-cert-templates/ca-config.json ./
 
 function generate_client_key_cert() {
   ca=$1
   file=$2
   user=$3
   org=$4
+  export user
+  export org
 
   if [ -f "${file}.pem" ]; then return 0; fi
-
-  envsubst < pki-cert-templates/${file}-csr.json > ${file}-csr.json
-
+  envsubst < ../pki-cert-templates/${file}-csr.json > ${file}-csr.json
+  cat ${file}-csr.json
+  cat ca-config.json
   cfssl gencert \
     -ca=${ca}.pem \
     -ca-key=${ca}-key.pem \
@@ -24,7 +27,7 @@ function generate_client_key_cert() {
     -profile=kubernetes \
     ${file}-csr.json | cfssljson -bare ${file}
 
-    rm ${file}.csr
+  rm ${file}-csr.json ${file}.csr
 }
 
 function generate_client_kubeconfig() {
@@ -33,13 +36,13 @@ function generate_client_kubeconfig() {
   name=$3
   server="kube-apiserver:6443"
 
-  if [ ! -z "${6}" ]; then
-    server="${6}"
+  if [ ! -z "${5}" ]; then
+    server="${5}"
   fi
 
   if [ -f "${file}.kubeconfig" ]; then return 0; fi
 
-  generate_client_key_cert "${1}" "${2}" "${3}" "${4}" "${5}"
+  generate_client_key_cert "${1}" "${2}" "${3}" "${4}"
 
   kubectl config set-cluster default \
     --certificate-authority=root-ca.pem \
@@ -98,10 +101,10 @@ generate_ca "root-ca"
 generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" ""
 
 # kubelet bootstrapper kubeconfig
-generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" ""
 
 # service client admin kubeconfig
 generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters" "kube-apiserver"
