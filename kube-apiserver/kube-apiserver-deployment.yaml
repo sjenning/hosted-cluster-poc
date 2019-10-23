@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: kube-apiserver
 spec:
-  replicas: 3
+  replicas: ${REPLICAS}
   strategy:
     type: Recreate
   selector:
