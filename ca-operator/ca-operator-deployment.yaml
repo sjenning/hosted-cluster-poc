@@ -50,12 +50,7 @@ spec:
                sleep 30
                continue
             fi
-            if ! oc get cm -n openshift-config-managed service-ca -o jsonpath='{ .data.ca-bundle\.crt }' > /tmp/service.ca; then
-               echo "Cannot fetch service-ca yet. Will continue to wait"
-               sleep 30
-               continue
-            fi
-            cat /etc/kubernetes/ca.crt /tmp/router.ca /tmp/service.ca > /tmp/kcm.ca
+            cat /etc/kubernetes/ca.crt /tmp/router.ca > /tmp/kcm.ca
 
             CHECKSUM="$(python -c "import hashlib;print hashlib.md5(open('/tmp/kcm.ca').read()).hexdigest()")"
 
