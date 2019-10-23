@@ -38,9 +38,6 @@ export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
 
 ### BEGIN USER CLUSTER OPERATIONS ###
 
-echo "TEMPORARY: Removing user cluster CVO"
-oc delete deployment -n openshift-cluster-version cluster-version-operator
-
 echo "Running oc adm upgrade"
 oc adm upgrade --force --to-image="${RELEASE_IMAGE}"
 
