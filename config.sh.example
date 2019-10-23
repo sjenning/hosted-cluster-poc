@@ -39,3 +39,6 @@ export API_NODEPORT=31123
 
 # the external port on which to connect to the managed openvpn server
 export OPENVPN_NODEPORT=31124
+
+# number of replicas for all ha compentry (typically 3)
+export REPLICAS=3
