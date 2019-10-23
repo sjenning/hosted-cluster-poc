@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source config-defaults.sh
+source lib/common.sh
 
 export API_NODEPORT="${API_NODEPORT:-$EXTERNAL_API_PORT}"
 
@@ -16,9 +17,9 @@ fi
 
 set -eu
 
-echo "Pulling release image"
-touch pull-secret
-REGISTRY_AUTH_FILE=$(pwd)/pull-secret ${CONTAINER_CLI} pull ${RELEASE_IMAGE} >/dev/null
+echo "Retrieving release pull specs"
+export RELEASE_PULLSPECS="$(mktemp)"
+fetch_release_pullspecs
 
 echo "Rendering manifests"
 rm -rf manifests
@@ -36,9 +37,6 @@ MGMT_KUBECONFIG="$KUBECONFIG"
 export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
 
 ### BEGIN USER CLUSTER OPERATIONS ###
-
-echo "TEMPORARY: Removing user cluster CVO"
-oc delete deployment -n openshift-cluster-version cluster-version-operator
 
 echo "Running oc adm upgrade"
 oc adm upgrade --force --to-image="${RELEASE_IMAGE}"
