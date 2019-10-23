@@ -38,6 +38,12 @@ export KUBECONFIG=$(pwd)/pki/admin.kubeconfig
 
 ### BEGIN USER CLUSTER OPERATIONS ###
 
+# Its possible that the user cluster components may not always exist
+if oc get deployment -n openshift-cluster-version cluster-version-operator &>/dev/null; then
+  echo "TEMPORARY: Removing user cluster CVO"
+  oc delete deployment -n openshift-cluster-version cluster-version-operator
+fi
+
 echo "Running oc adm upgrade"
 oc adm upgrade --force --to-image="${RELEASE_IMAGE}"
 
