@@ -20,8 +20,5 @@ data:
 EOF
 
 export HYPERKUBE_IMAGE=$(image_for hyperkube)
-if [[ "$DEPLOY_HA" == "true" ]]; then
-  envsubst < kube-controller-manager-ha-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
-else
-  envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
-fi
+envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
+

@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: kube-scheduler
 spec:
-  replicas: 3
+  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: kube-scheduler

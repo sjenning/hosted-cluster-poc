@@ -15,8 +15,4 @@ data:
 EOF
 
 export HYPERKUBE_IMAGE=$(image_for hyperkube)
-if [[ "$DEPLOY_HA" == "true" ]]; then
-  envsubst < kube-scheduler-ha-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml
-else
-  envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml
-fi
+envsubst < kube-scheduler-deployment.yaml > ../manifests/managed/kube-scheduler-deployment.yaml
