@@ -29,20 +29,20 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       automountServiceAccountToken: false
       containers:
-        - name: openshift-apiserver
-          image: ${OPENSHIFT_APISERVER_IMAGE}
-          args:
-            - "start"
-            - "--config=/etc/kubernetes/config.yaml"
-          volumeMounts:
-            - mountPath: /etc/kubernetes/
-              name: secret
-            - mountPath: /var/run/kubernetes
-              name: logs
-          workingDir: /var/run/kubernetes
-      volumes:
-        - secret:
-            secretName: openshift-apiserver
+      - name: openshift-apiserver
+        image: ${OPENSHIFT_APISERVER_IMAGE}
+        args:
+        - "start"
+        - "--config=/etc/kubernetes/config.yaml"
+        volumeMounts:
+        - mountPath: /etc/kubernetes/
           name: secret
-        - emptyDir: {}
+        - mountPath: /var/run/kubernetes
           name: logs
+        workingDir: /var/run/kubernetes
+      volumes:
+      - secret:
+          secretName: openshift-apiserver
+        name: secret
+      - emptyDir: {}
+        name: logs
