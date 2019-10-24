@@ -21,4 +21,3 @@ EOF
 
 export HYPERKUBE_IMAGE=$(image_for hyperkube)
 envsubst < kube-controller-manager-deployment.yaml > ../manifests/managed/kube-controller-manager-deployment.yaml
-
