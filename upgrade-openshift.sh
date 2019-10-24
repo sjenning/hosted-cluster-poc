@@ -24,7 +24,7 @@ fetch_release_pullspecs
 echo "Rendering manifests"
 rm -rf manifests
 mkdir -p manifests/managed manifests/user
-for component in etcd kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver ca-operator; do
+for component in etcd kube-apiserver kube-controller-manager kube-scheduler openshift-apiserver openshift-controller-manager cluster-version-operator auto-approver ca-operator oauth; do
   pushd ${component} >/dev/null
   ./render.sh >/dev/null
   popd >/dev/null
