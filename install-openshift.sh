@@ -15,7 +15,7 @@ set -eu
 # make-pki.sh does not remove the /pki directory and does not regenerate certs that already exist.
 # If you wish to regenerate the PKI, remove the /pki directory.
 echo "Creating PKI assets"
-./make-pki.sh
+./make-pki.sh &>/dev/null
 
 echo "Retrieving release pull specs"
 export RELEASE_PULLSPECS="$(mktemp)"
