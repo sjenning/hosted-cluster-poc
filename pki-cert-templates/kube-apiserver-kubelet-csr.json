@@ -7,6 +7,9 @@
   },
   "names": [
     {
+      "C": "US",
+      "L": "CA",
+      "ST": "San Francisco",
       "O": "${org}"
     }
   ]
