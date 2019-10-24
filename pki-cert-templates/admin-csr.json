@@ -1,8 +1,6 @@
 {
   "CN": "${user}",
-  "hosts": [
-    "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
-  ],
+  "hosts": [""],
   "key": {
     "algo": "rsa",
     "size": 2048

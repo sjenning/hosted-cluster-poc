@@ -101,16 +101,16 @@ generate_ca "root-ca"
 generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" ""
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # kubelet bootstrapper kubeconfig
-generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" ""
+generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # service client admin kubeconfig
-generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters"
 
 # kube-controller-manager
-generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters"
 if [ ! -e "service-account-key.pem" ]; then 
   openssl genrsa -out service-account-key.pem 2048
   openssl rsa -in service-account-key.pem -pubout > service-account.pem

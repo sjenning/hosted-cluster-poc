@@ -1,6 +1,6 @@
 {
 	"CN": "${user}",
-	"hosts": [""],
+	"hosts": ["kube-apiserver"],
 	"key": {
 		"algo": "rsa",
 		"size": 2048
