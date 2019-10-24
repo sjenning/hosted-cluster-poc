@@ -36,3 +36,6 @@ export BASE_DOMAIN=example.com
 
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
+
+# number of replicas for all ha compentry (typically 3)
+export REPLICAS=3
