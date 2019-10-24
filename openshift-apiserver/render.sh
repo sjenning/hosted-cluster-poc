@@ -51,6 +51,7 @@ spec:
   versionPriority: 15
 EOF
 done
+
 for i in openshift-apiserver-user-*.yaml ; do
   envsubst < $i > ../manifests/user/$i
 done
