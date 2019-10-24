@@ -34,10 +34,10 @@ spec:
       - name: kube-apiserver
         image: ${HYPERKUBE_IMAGE}
         command:
-          - hyperkube
-          - kube-apiserver
+        - hyperkube
+        - kube-apiserver
         args:
-          - "--openshift-config=/etc/kubernetes/config.yaml"
+        - "--openshift-config=/etc/kubernetes/config.yaml"
         workingDir: /var/log/kube-apiserver
         livenessProbe:
           httpGet:
@@ -54,23 +54,23 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 10
         volumeMounts:
-          - mountPath: /etc/kubernetes/
-            name: kube-apiserver-secret
-          - mountPath: /var/log/kube-apiserver/
-            name: logs
+        - mountPath: /etc/kubernetes/
+          name: kube-apiserver-secret
+        - mountPath: /var/log/kube-apiserver/
+          name: logs
       - name: openvpn-client
         image: quay.io/sjenning/poc:openvpn
         imagePullPolicy: Always
         command:
-          - /usr/sbin/openvpn
-          - --config
-          - /etc/openvpn/client.conf
+        - /usr/sbin/openvpn
+        - --config
+        - /etc/openvpn/client.conf
         workingDir: /etc/openvpn/
         securityContext:
           privileged: true
         volumeMounts:
-          - mountPath: /etc/openvpn/
-            name: openvpn-client-secret
+        - mountPath: /etc/openvpn/
+          name: openvpn-client-secret
       volumes:
       - secret:
           secretName: kube-apiserver
