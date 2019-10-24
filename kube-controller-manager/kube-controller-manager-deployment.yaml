@@ -45,10 +45,10 @@ spec:
           name: logs
         workingDir: /var/log/kube-controller-manager
       volumes:
-        - secret:
-            secretName: kube-controller-manager
-          name: secret
-        - emptyDir: {}
-          name: logs
-        - emptyDir: {}
-          name: certdir
+      - secret:
+          secretName: kube-controller-manager
+        name: secret
+      - emptyDir: {}
+        name: logs
+      - emptyDir: {}
+        name: certdir
