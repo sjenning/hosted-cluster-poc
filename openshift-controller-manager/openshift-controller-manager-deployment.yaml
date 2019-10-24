@@ -29,16 +29,16 @@ spec:
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       automountServiceAccountToken: false
       containers:
-        - name: openshift-controller-manager
-          image: ${OPENSHIFT_CONTROLLER_MANAGER_IMAGE}
-          command:
-            - "openshift-controller-manager"
-          args:
-            - "start"
-            - "--config=/etc/kubernetes/config.yaml"
-          volumeMounts:
-            - mountPath: /etc/kubernetes/
-              name: secret
+      - name: openshift-controller-manager
+        image: ${OPENSHIFT_CONTROLLER_MANAGER_IMAGE}
+        command:
+          - "openshift-controller-manager"
+        args:
+          - "start"
+          - "--config=/etc/kubernetes/config.yaml"
+        volumeMounts:
+          - mountPath: /etc/kubernetes/
+            name: secret
       volumes:
         - secret:
             secretName: openshift-controller-manager
