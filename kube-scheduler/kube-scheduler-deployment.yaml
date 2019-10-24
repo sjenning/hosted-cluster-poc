@@ -42,10 +42,10 @@ spec:
         - "--authorization-kubeconfig=/etc/kubernetes/kubeconfig"
         - "-v=2"
         volumeMounts:
-          - mountPath: /etc/kubernetes/
-            name: secret
-          - mountPath: /var/run/kubernetes/
-            name: cert
+        - mountPath: /etc/kubernetes/
+          name: secret
+        - mountPath: /var/run/kubernetes/
+          name: cert
         workDir: /var/run/kubernetes
       volumes:
       - secret:
