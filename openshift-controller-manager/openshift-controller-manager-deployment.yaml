@@ -32,14 +32,14 @@ spec:
       - name: openshift-controller-manager
         image: ${OPENSHIFT_CONTROLLER_MANAGER_IMAGE}
         command:
-          - "openshift-controller-manager"
+        - "openshift-controller-manager"
         args:
-          - "start"
-          - "--config=/etc/kubernetes/config.yaml"
+        - "start"
+        - "--config=/etc/kubernetes/config.yaml"
         volumeMounts:
-          - mountPath: /etc/kubernetes/
-            name: secret
-      volumes:
-        - secret:
-            secretName: openshift-controller-manager
+        - mountPath: /etc/kubernetes/
           name: secret
+      volumes:
+      - secret:
+          secretName: openshift-controller-manager
+        name: secret
