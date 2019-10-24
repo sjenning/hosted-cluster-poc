@@ -32,13 +32,13 @@ spec:
       - name: openshift-apiserver
         image: ${OPENSHIFT_APISERVER_IMAGE}
         args:
-          - "start"
-          - "--config=/etc/kubernetes/config.yaml"
+        - "start"
+        - "--config=/etc/kubernetes/config.yaml"
         volumeMounts:
-          - mountPath: /etc/kubernetes/
-            name: secret
-          - mountPath: /var/run/kubernetes
-            name: logs
+        - mountPath: /etc/kubernetes/
+          name: secret
+        - mountPath: /var/run/kubernetes
+          name: logs
         workingDir: /var/run/kubernetes
       volumes:
       - secret:
