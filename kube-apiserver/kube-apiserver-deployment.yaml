@@ -3,7 +3,9 @@ apiVersion: apps/v1
 metadata:
   name: kube-apiserver
 spec:
-  replicas: 1
+  replicas: ${REPLICAS}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: kube-apiserver
@@ -12,6 +14,21 @@ spec:
       labels:
         app: kube-apiserver
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values: ["kube-apiserver"]
+              topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values: ["kube-apiserver"]
+              topologyKey: "failure-domain.beta.kubernetes.io/zone"
       automountServiceAccountToken: false
       containers:
       - name: kube-apiserver
