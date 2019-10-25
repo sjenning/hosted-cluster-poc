@@ -37,6 +37,9 @@ export BASE_DOMAIN=example.com
 # the subdomain to be used for the ingress router
 export INGRESS_SUBDOMAIN="apps.${BASE_DOMAIN}"
 
+# number of replicas for all ha compentry (typically 3)
+export REPLICAS=3
+
 # apiserver csr hosts (can leave blank)
 export EXTERNAL_PRIVATE_API_DNS_NAME="c100.private.containers.dev.cloud.ibm.com"
 export EXTERNAL_API_DNS_NAME_EXTERNAL="c100-e.containers.dev.cloud.ibm.com"
