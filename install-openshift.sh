@@ -22,7 +22,10 @@ export RELEASE_PULLSPECS="$(mktemp)"
 fetch_release_pullspecs
 
 echo "Rendering manifests"
-rm -rf manifests
+if [ "${KEEP_MANIFESTS}" != "true" ]; then
+  echo "Pre-cleaning up the manifests"
+  rm -rf manifests
+fi
 mkdir -p manifests/managed manifests/user
 KUBEADMIN_PASSWORD=$(openssl rand -hex 24 | tr -d '\n')
 echo $KUBEADMIN_PASSWORD > kubeadmin-password
