@@ -14,6 +14,9 @@ export NAMESPACE=hosted
 # none, aws, or openstack
 export PLATFORM=aws
 
+# network type
+export NETWORK_TYPE=OpenShiftSDN
+
 # the base domain for the cluster
 export BASE_DOMAIN="${NAMESPACE}.${PARENT_DOMAIN}"
 
