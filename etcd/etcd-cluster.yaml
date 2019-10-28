@@ -1,13 +1,88 @@
 apiVersion: etcd.database.coreos.com/v1beta2
 kind: EtcdCluster
 metadata:
-  name: etcd
+  name: etcd-${CLUSTER_ID}
+  labels:
+    clusterID: "${CLUSTER_ID}"
 spec:
   size: 3
-  version: "3.2.13"
+  version: 3.3.13
+  repository: "${ETCD_IMAGE}"
+  pod:
+    busyboxImage: ${BUSY_BOX_IMAGE}
+    tolerations:
+      - key: "multi-az-worker"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      - key: dedicated
+        operator: Equal
+        value: master-${CLUSTER_ID}
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoExecute
+      - key: node.kubernetes.io/unreachable
+        operator: Exists
+        effect: NoExecute
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: etcd_cluster
+                  operator: In
+                  values: ["etcd-${CLUSTER_ID}"]
+            topologyKey: "kubernetes.io/hostname"
+          - labelSelector:
+              matchExpressions:
+                - key: etcd_cluster
+                  operator: In
+                  values: ["etcd-${CLUSTER_ID}"]
+            topologyKey: "failure-domain.beta.kubernetes.io/zone"
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: etcd_cluster
+                    operator: In
+                    values: ["etcd-${CLUSTER_ID}"]
+              topologyKey: failure-domain.beta.kubernetes.io/region
+    etcdEnv:
+      - name: ETCD_ELECTION_TIMEOUT
+        value: "15000"
+      - name: ETCD_HEARTBEAT_INTERVAL
+        value: "100"
+      - name: ETCD_SNAPSHOT_COUNT
+        value: "10000"
+      - name: ETCD_MAX_SNAPSHOTS
+        value: "5"
+      - name: ETCD_AUTO_COMPACTION_RETENTION
+        value: "1"
+      - name: ETCD_QUOTA_BACKEND_BYTES
+        value: "4294967296"
+      - name: ETCD_CIPHER_SUITES
+        value: "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305"
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+    livenessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 300
+      periodSeconds: 60
+      successThreshold: 1
+      timeoutSeconds: 10
+    readinessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 1
+      periodSeconds: 60
+      successThreshold: 1
+      timeoutSeconds: 10
   TLS:
     static:
       member:
-        peerSecret: etcd-peer-tls
-        serverSecret: etcd-server-tls
-      operatorSecret: etcd-client-tls
+        peerSecret: etcd-${CLUSTER_ID}-peer-tls
+        serverSecret: etcd-${CLUSTER_ID}-server-tls
+      operatorSecret: etcd-${CLUSTER_ID}-client-tls

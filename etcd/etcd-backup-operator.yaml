@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: etcd-operator
+  name: etcd-backup-operator
   labels:
-    name: etcd-operator
+    name: etcd-backup-operator
 spec:
   strategy:
     type: RollingUpdate
@@ -12,15 +12,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      name: etcd-operator
+      name: etcd-backup-operator
   template:
     metadata:
       labels:
-        name: etcd-operator
-      annotations:
-        prometheus.io/path: '/metrics'
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '8080'
+        name: etcd-backup-operator
     spec:
       serviceAccount: etcd-operator
       tolerations:
@@ -35,23 +31,19 @@ spec:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: ["etcd-operator"]
+                    values: ["etcd-backup-operator"]
               topologyKey: "kubernetes.io/hostname"
             - labelSelector:
                 matchExpressions:
                   - key: name
                     operator: In
-                    values: ["etcd-operator"]
+                    values: ["etcd-backup-operator"]
               topologyKey: "failure-domain.beta.kubernetes.io/zone"
       containers:
-        - name: etcd-operator
+        - name: etcd-backup-operator
           image: ${ETCD_OPERATOR_IMAGE}
-          ports:
-            - containerPort: 8080
-              name: http
           command:
-            - etcd-operator
-            - -re-interval=60s
+            - etcd-backup-operator
           env:
             - name: MY_POD_NAMESPACE
               valueFrom:
@@ -61,5 +53,3 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: ETCD_HEALTHCHECK_IMAGE
-              value: ${ETCD_HEALTH_CHECK_IMAGE}

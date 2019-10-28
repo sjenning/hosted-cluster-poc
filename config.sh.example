@@ -45,3 +45,20 @@ export OPENVPN_NODEPORT=31124
 
 # number of replicas for all ha compentry (typically 3)
 export REPLICAS=3
+
+# cluster id
+export CLUSTER_ID=cluster_id
+
+# Used for etcd config
+export REGION=us-standard
+export BACKUPS_BUCKET=dev-south-iks-etcd-backups
+export BACKUPS_ENDPOINT=https://s3.us-south.objectstorage.softlayer.net
+export ACCESS_KEY=access_key
+export SECRET_ACCESS_KEY=secret_access_key
+export REGISTRY_URL=bootstrap1234
+export ETCD_OPERATOR_IMAGE=$REGISTRY_URL/etcd-operator:1
+export BUSY_BOX_IMAGE=$REGISTRY_URL/busybox:1.28.4-glibc
+export ETCD_HEALTH_CHECK_IMAGE=$REGISTRY_URL/etcd-healthchecker:1
+export CUSTOM_CURL_IMAGE=$REGISTRY_URL/etcd-operator-curl:1
+export ETCD_OPERATOR_BACKUP_IMAGE=$REGISTRY_URL/armada-etcd-recovery-backup:1
+export ETCD_IMAGE=$REGISTRY_URL/etcd

@@ -1,0 +1,4 @@
+[default]
+region=$REGION
+backups_bucket=$BACKUPS_BUCKET
+backups_endpoint=$BACKUPS_ENDPOINT

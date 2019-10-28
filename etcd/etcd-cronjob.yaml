@@ -1,0 +1,62 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubx-etcd-backup-${CLUSTER_ID}
+spec:
+  schedule: "0 */8 * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 6
+      template:
+        spec:
+          serviceAccountName: etcd-operator
+          tolerations:
+            - key: "multi-az-worker"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+          containers:
+            - name: kubx-etcd-backup
+              image: ${ETCD_OPERATOR_BACKUP_IMAGE}
+              env:
+                - name: COS_CREDENTIALS
+                  valueFrom:
+                    secretKeyRef:
+                      name: cos-credentials
+                      key: credentials
+                - name: COS_CONFIG
+                  valueFrom:
+                    secretKeyRef:
+                      name: cos-credentials
+                      key: config
+                - name: CLUSTER_ID
+                  value: "${CLUSTER_ID}"
+                - name: ETCDCTL_API
+                  value: "2"
+                - name: ETCDTOOL_PEERS
+                  value: "https://etcd-${CLUSTER_ID}-client.${NAMESPACE}.svc:2379"
+                - name: NAMESPACE
+                  value: "${NAMESPACE}"
+                - name: ETCDTOOL_CERT
+                  value: /etc/certs/etcd-client.crt
+                - name: ETCDTOOL_KEY
+                  value: /etc/certs/etcd-client.key
+                - name: ETCDTOOL_CA
+                  value: /etc/certs/etcd-client-ca.crt
+                - name: NUMBER_OF_DAILY_BACKUPS
+                  value: "3"
+                - name: WAIT_COUNT
+                  value: "30"
+                - name: RETRY_COUNT
+                  value: "40"
+              volumeMounts:
+                - name: etcd-certs-volume
+                  mountPath: /etc/certs
+          volumes:
+            - name: etcd-certs-volume
+              secret:
+                secretName: etcd-${CLUSTER_ID}-client-tls
+          restartPolicy: OnFailure
+          activeDeadlineSeconds: 1800
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
