@@ -1,0 +1,22 @@
+{
+  "CN": "${user}",
+  "hosts": [
+    "openshift-apiserver",
+    "openshift-apiserver.${NAMESPACE}.svc",
+    "openshift-controller-manager.${NAMESPACE}.svc.cluster.local",
+    "openshift-apiserver.default.svc",
+    "openshift-apiserver.default.svc.cluster.local"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "CA",
+      "ST": "San Francisco",
+      "O": "${org}"
+    }
+  ]
+}

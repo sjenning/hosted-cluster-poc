@@ -6,40 +6,28 @@ source config-defaults.sh
 
 mkdir -p pki
 cd pki
+cp ../pki-cert-templates/ca-config.json ./
 
 function generate_client_key_cert() {
   ca=$1
   file=$2
   user=$3
   org=$4
-  hostname="$5"
+  export user
+  export org
 
   if [ -f "${file}.pem" ]; then return 0; fi
-
-  cat > ${file}-csr.json <<EOF
-  {
-    "CN": "${user}",
-    "key": {
-      "algo": "rsa",
-      "size": 2048
-    },
-    "names": [
-      {
-        "O": "${org}"
-      }
-    ]
-  }
-EOF
-
+  envsubst < ../pki-cert-templates/${file}-csr.json > ${file}-csr.json
+  cat ${file}-csr.json
+  cat ca-config.json
   cfssl gencert \
     -ca=${ca}.pem \
     -ca-key=${ca}-key.pem \
     -config=ca-config.json \
     -profile=kubernetes \
-    -hostname="${hostname}" \
     ${file}-csr.json | cfssljson -bare ${file}
 
-    rm ${file}-csr.json ${file}.csr
+  rm ${file}-csr.json ${file}.csr
 }
 
 function generate_client_kubeconfig() {
@@ -48,13 +36,13 @@ function generate_client_kubeconfig() {
   name=$3
   server="kube-apiserver:6443"
 
-  if [ ! -z "${6}" ]; then
-    server="${6}"
+  if [ ! -z "${5}" ]; then
+    server="${5}"
   fi
 
   if [ -f "${file}.kubeconfig" ]; then return 0; fi
 
-  generate_client_key_cert "${1}" "${2}" "${3}" "${4}" "${5}"
+  generate_client_key_cert "${1}" "${2}" "${3}" "${4}"
 
   kubectl config set-cluster default \
     --certificate-authority=root-ca.pem \
@@ -108,38 +96,21 @@ function generate_secret() {
   envsubst < ../templates/secret-tls-template.yaml > ${file}-tls.yaml
 }
 
-# generate ca-config
-cat > ca-config.json <<EOF
-{
-  "signing": {
-    "default": {
-      "expiry": "8760h"
-    },
-    "profiles": {
-      "kubernetes": {
-        "usages": ["signing", "key encipherment", "server auth", "client auth"],
-        "expiry": "8760h"
-      }
-    }
-  }
-}
-EOF
-
 # generate CAs
 generate_ca "root-ca"
 generate_ca "cluster-signer"
 
 # admin kubeconfig
-generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_kubeconfig "root-ca" "admin" "system:admin" "system:masters" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # kubelet bootstrapper kubeconfig
-generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
+generate_client_kubeconfig "cluster-signer" "kubelet-bootstrap" "system:bootstrapper" "system:bootstrappers" "${EXTERNAL_API_DNS_NAME}:${EXTERNAL_API_PORT}"
 
 # service client admin kubeconfig
-generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "service-admin" "system:admin" "system:masters"
 
 # kube-controller-manager
-generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters" "kube-apiserver"
+generate_client_kubeconfig "root-ca" "kube-controller-manager" "system:admin" "system:masters"
 if [ ! -e "service-account-key.pem" ]; then 
   openssl genrsa -out service-account-key.pem 2048
   openssl rsa -in service-account-key.pem -pubout > service-account.pem
@@ -149,20 +120,20 @@ fi
 generate_client_kubeconfig "root-ca" "kube-scheduler" "system:admin" "system:masters"
 
 # kube-apiserver
-generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes" "${EXTERNAL_API_DNS_NAME},${SERVICE_NETWORK_PREFIX}.0.1,${EXTERNAL_API_IP_ADDRESS},kubernetes,kubernetes.default.svc,kubernetes.default.svc.cluster.local,kube-apiserver,kube-apiserver.${NAMESPACE}.svc,kube-apiserver.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "kube-apiserver-server" "kubernetes" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-kubelet" "system:kube-apiserver" "kubernetes"
 generate_client_key_cert "root-ca" "kube-apiserver-aggregator-proxy-client" "system:openshift-aggregator" "kubernetes"
 
 # etcd
 generate_client_key_cert "root-ca" "etcd-client" "etcd-client" "kubernetes"
-generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes" "*.etcd.${NAMESPACE}.svc,etcd-client.${NAMESPACE}.svc,etcd,etcd-client,localhost"
-generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes" "*.etcd.${NAMESPACE}.svc,*.etcd.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "etcd-server" "etcd-server" "kubernetes"
+generate_client_key_cert "root-ca" "etcd-peer" "etcd-peer" "kubernetes"
 
 # openshift-apiserver
-generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift-apiserver" "openshift" "openshift-apiserver,openshift-apiserver.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local,openshift-apiserver.default.svc,openshift-apiserver.default.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-apiserver-server" "openshift-apiserver" "openshift"
 
 # openshift-controller-manager
-generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift-controller-manager" "openshift" "openshift-controller-manager,openshift-controller-manager.${NAMESPACE}.svc,openshift-controller-manager.${NAMESPACE}.svc.cluster.local"
+generate_client_key_cert "root-ca" "openshift-controller-manager-server" "openshift-controller-manager" "openshift"
 
 cat root-ca.pem cluster-signer.pem > combined-ca.pem
 
@@ -170,7 +141,7 @@ rm -f *.csr
 
 # openvpn assets
 generate_ca "openvpn-ca"
-generate_client_key_cert "openvpn-ca" "openvpn-server" "server" "kubernetes" "openvpn-server,openvpn-server.${NAMESPACE}.svc,${EXTERNAL_API_DNS_NAME}:${OPENVPN_NODEPORT}"
+generate_client_key_cert "openvpn-ca" "openvpn-server" "server" "kubernetes"
 generate_client_key_cert "openvpn-ca" "openvpn-kube-apiserver-client" "kube-apiserver" "kubernetes"
 generate_client_key_cert "openvpn-ca" "openvpn-worker-client" "worker" "kubernetes"
 if [ ! -e "openvpn-dh.pem" ]; then
