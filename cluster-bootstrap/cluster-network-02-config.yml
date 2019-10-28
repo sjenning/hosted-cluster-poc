@@ -9,7 +9,7 @@ spec:
     hostPrefix: 23
   externalIP:
     policy: {}
-  networkType: OpenShiftSDN
+  networkType: ${NETWORK_TYPE}
   serviceNetwork:
   - ${SERVICE_NETWORK_CIDR}
 status: {}

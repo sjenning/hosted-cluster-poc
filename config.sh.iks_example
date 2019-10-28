@@ -1,6 +1,9 @@
 # none, aws, or openstack
 export PLATFORM=none
 
+# network type
+export NETWORK_TYPE=OpenShiftSDN
+
 # namespace in the managed cluster in which to deploy the control plane
 export NAMESPACE="${NAMESPACE:=hosted}"
 
